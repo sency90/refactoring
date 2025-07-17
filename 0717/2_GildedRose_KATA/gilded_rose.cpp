@@ -19,6 +19,11 @@ void GildedRose::updateQuality() {
 			if(item.quality < 50) {
 				item.quality = item.quality + 1;
 			}
+			if(item.sellIn < 1) {
+				if(item.quality < 50) {
+					item.quality = item.quality + 1;
+				}
+			}
 		}
 		else if(item.name == BACKSTAGE_PASS) {
 			if(item.quality < 50) {
@@ -36,23 +41,6 @@ void GildedRose::updateQuality() {
 					}
 				}
 			}
-		}
-		else if(item.name == SULFURAS) {
-		}
-		else {
-			if(item.quality > 0) {
-				item.quality = item.quality - 1;
-			}
-		}
-
-		if(item.name == AGED_BRIE) {
-			if(item.sellIn < 1) {
-				if(item.quality < 50) {
-					item.quality = item.quality + 1;
-				}
-			}
-		}
-		else if(item.name == BACKSTAGE_PASS) {
 			if(item.sellIn < 1) {
 				item.quality = item.quality - item.quality;
 			}
@@ -60,6 +48,9 @@ void GildedRose::updateQuality() {
 		else if(item.name == SULFURAS) {
 		}
 		else {
+			if(item.quality > 0) {
+				item.quality = item.quality - 1;
+			}
 			if(item.sellIn < 1) {
 				if(item.quality > 0) {
 					item.quality = item.quality - 1;
