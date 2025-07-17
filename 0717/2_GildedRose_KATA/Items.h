@@ -1,7 +1,7 @@
 #pragma once
 #include "gilded_rose.h"
 
-class AgedBrieItem{
+class AgedBrieItem: public GildedRoseItem {
 private:
 	Item *item_;
 
@@ -21,7 +21,7 @@ public:
 	}
 };
 
-class BackstagePassesItem{
+class BackstagePassesItem: public GildedRoseItem{
 private:
 	Item *item_;
 
@@ -52,7 +52,7 @@ public:
 
 };
 
-class SulfurasItem{
+class SulfurasItem: public GildedRoseItem{
 private:
 	Item *item_;
 
@@ -64,7 +64,7 @@ public:
 	}
 };
 
-class NormalItem{
+class NormalItem: public GildedRoseItem{
 private:
 	Item *item_;
 

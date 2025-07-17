@@ -16,26 +16,28 @@ GildedRose::GildedRose(vector<Item>& items) : items(items) {
 void GildedRose::updateQuality() {
 	for(int i = 0; i < items.size(); i++) {
 		Item & item = items[i];
-		if(item.name == AGED_BRIE) {
-			AgedBrieItem* agedBrieItem = new AgedBrieItem(&item);
-			agedBrieItem->updateQuality();
-		}
-		else if(item.name == BACKSTAGE_PASS) {
-			BackstagePassesItem* backstagePassesItem = new BackstagePassesItem(&item);
-			backstagePassesItem->updateQuality();
-		}
-		else if(item.name == SULFURAS) {
-			SulfurasItem* sulfurasItem = new SulfurasItem(&item);
-			sulfurasItem->updateQuality();
-		}
-		else {
-			NormalItem* normalItem = new NormalItem(&item);
-			normalItem->updateQuality();
-		}
-
+		updateQuality(item);
 		updateSellIn(item);
-
 	}
+}
+
+void GildedRose::updateQuality(Item & item)
+{
+	GildedRoseItem* gildedRoseItem = nullptr;
+	if(item.name == AGED_BRIE) {
+		gildedRoseItem = new AgedBrieItem(&item);
+	}
+	else if(item.name == BACKSTAGE_PASS) {
+		gildedRoseItem = new BackstagePassesItem(&item);
+	}
+	else if(item.name == SULFURAS) {
+		gildedRoseItem = new SulfurasItem(&item);
+	}
+	else {
+		gildedRoseItem = new NormalItem(&item);
+	}
+
+	gildedRoseItem->updateQuality();
 }
 
 void GildedRose::updateSellIn(Item & item) {

@@ -1,6 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
+#define interface struct
+
+interface GildedRoseItem{
+	virtual void updateQuality() = 0;
+};
 
 class Item {
 public:
@@ -16,6 +21,7 @@ public:
 	GildedRose(std::vector<Item>& items);
 
 	void updateQuality();
+	void updateQuality(Item & item);
 	void updateSellIn(Item & item);
 	//매일 자정 모든 아이템의 값들이 갱신됨
 	//판매가능 기간이 지나면, 품질은 2배씩 빨리 떨어짐.
