@@ -3,7 +3,7 @@
 using std::vector;
 using std::string;
 
-namespace{
+namespace {
 	const char* SULFURAS = "Sulfuras, Hand of Ragnaros";
 	const char* AGED_BRIE = "Aged Brie";
 	const char* BACKSTAGE_PASS = "Backstage passes to a TAFKAL80ETC concert";
@@ -18,37 +18,21 @@ void GildedRose::updateQuality() {
 		if(item.name == AGED_BRIE) {
 			if(item.quality < 50) {
 				item.quality = item.quality + 1;
-
-				if(item.name == BACKSTAGE_PASS) {
-					if(item.sellIn < 11) {
-						if(item.quality < 50) {
-							item.quality = item.quality + 1;
-						}
-					}
-
-					if(item.sellIn < 6) {
-						if(item.quality < 50) {
-							item.quality = item.quality + 1;
-						}
-					}
-				}
 			}
 		}
 		else if(item.name == BACKSTAGE_PASS) {
 			if(item.quality < 50) {
 				item.quality = item.quality + 1;
 
-				if(item.name == BACKSTAGE_PASS) {
-					if(item.sellIn < 11) {
-						if(item.quality < 50) {
-							item.quality = item.quality + 1;
-						}
+				if(item.sellIn < 11) {
+					if(item.quality < 50) {
+						item.quality = item.quality + 1;
 					}
+				}
 
-					if(item.sellIn < 6) {
-						if(item.quality < 50) {
-							item.quality = item.quality + 1;
-						}
+				if(item.sellIn < 6) {
+					if(item.quality < 50) {
+						item.quality = item.quality + 1;
 					}
 				}
 			}
