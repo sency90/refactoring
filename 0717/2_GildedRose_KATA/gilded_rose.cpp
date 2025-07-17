@@ -21,13 +21,16 @@ void GildedRose::updateQuality() {
 			agedBrieItem->updateQualityForAgedBrie();
 		}
 		else if(item.name == BACKSTAGE_PASS) {
-			updateQualityForBackstagePasses(item);
+			BackstagePassesItem* backstagePassesItem = new BackstagePassesItem(&item);
+			backstagePassesItem->updateQualityForBackstagePasses();
 		}
 		else if(item.name == SULFURAS) {
-			updateQualityForSulfuras(item);
+			SulfurasItem* sulfurasItem = new SulfurasItem(&item);
+			sulfurasItem->updateQualityForSulfuras();
 		}
 		else {
-			updateQualityForNormalItem(item);
+			NormalItem* normalItem = new NormalItem(&item);
+			normalItem->updateQualityForNormalItem();
 		}
 
 		updateSellIn(item);
@@ -38,40 +41,5 @@ void GildedRose::updateQuality() {
 void GildedRose::updateSellIn(Item & item) {
 	if(item.name != SULFURAS) {
 		item.sellIn = item.sellIn - 1;
-	}
-}
-
-void GildedRose::updateQualityForBackstagePasses(Item & item) {
-	if(item.quality < 50) {
-		item.quality = item.quality + 1;
-
-		if(item.sellIn < 11) {
-			if(item.quality < 50) {
-				item.quality = item.quality + 1;
-			}
-		}
-
-		if(item.sellIn < 6) {
-			if(item.quality < 50) {
-				item.quality = item.quality + 1;
-			}
-		}
-	}
-	if(item.sellIn < 1) {
-		item.quality = item.quality - item.quality;
-	}
-}
-
-void GildedRose::updateQualityForSulfuras(Item & item) {
-}
-
-void GildedRose::updateQualityForNormalItem(Item & item) {
-	if(item.quality > 0) {
-		item.quality = item.quality - 1;
-	}
-	if(item.sellIn < 1) {
-		if(item.quality > 0) {
-			item.quality = item.quality - 1;
-		}
 	}
 }
