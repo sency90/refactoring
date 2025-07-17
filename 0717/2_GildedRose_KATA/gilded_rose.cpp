@@ -15,7 +15,26 @@ GildedRose::GildedRose(vector<Item>& items) : items(items) {
 void GildedRose::updateQuality() {
 	for(int i = 0; i < items.size(); i++) {
 		Item & item = items[i];
-		if(item.name == AGED_BRIE || item.name == BACKSTAGE_PASS) {
+		if(item.name == AGED_BRIE) {
+			if(item.quality < 50) {
+				item.quality = item.quality + 1;
+
+				if(item.name == BACKSTAGE_PASS) {
+					if(item.sellIn < 11) {
+						if(item.quality < 50) {
+							item.quality = item.quality + 1;
+						}
+					}
+
+					if(item.sellIn < 6) {
+						if(item.quality < 50) {
+							item.quality = item.quality + 1;
+						}
+					}
+				}
+			}
+		}
+		else if(item.name == BACKSTAGE_PASS) {
 			if(item.quality < 50) {
 				item.quality = item.quality + 1;
 
