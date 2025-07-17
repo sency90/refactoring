@@ -14,80 +14,58 @@
 using std::vector;
 using std::string;
 
-<span style = "background-color:#dfd">GildedRose::GildedRose(vector&lt;Item&gt;&amp; items) : items(items)
-{
+<span style = "background-color:#dfd">GildedRose::GildedRose(vector&lt;Item&gt;&amp; items) : items(items) {
 }</span>
 
-void GildedRose::updateQuality()
-<span style = "background-color:#dfd">{
-	for(int i = 0; i &lt; items.size(); i++)</span>
-	{
-<span style = "background-color:#dfd">		if(items[i].name != "Aged Brie" &amp;&amp; items[i].name != "Backstage passes to a TAFKAL80ETC concert")</span>
-		{
-<span style = "background-color:#dfd">			if(items[i].quality &gt; 0)</span>
-			{
-<span style = "background-color:#fdd">				if(items[i].name != "Sulfuras, Hand of Ragnaros")</span>
-				{
-<span style = "background-color:#fdd">					items[i].quality = items[i].quality - 1;</span>
+<span style = "background-color:#dfd">void GildedRose::updateQuality() {
+	for(int i = 0; i &lt; items.size(); i++) {
+		if(items[i].name != "Aged Brie" &amp;&amp; items[i].name != "Backstage passes to a TAFKAL80ETC concert") {
+			if(items[i].quality &gt; 0) {
+				if(items[i].name != "Sulfuras, Hand of Ragnaros") {
+					items[i].quality = items[i].quality - 1;</span>
 				}
 			}
 <span style = "background-color:#dfd">		}</span>
-		else
-		{
-<span style = "background-color:#fdd">			if(items[i].quality &lt; 50)</span>
-			{
-<span style = "background-color:#fdd">				items[i].quality = items[i].quality + 1;</span>
+		else {
+<span style = "background-color:#dfd">			if(items[i].quality &lt; 50) {
+				items[i].quality = items[i].quality + 1;</span>
 
-<span style = "background-color:#fdd">				if(items[i].name == "Backstage passes to a TAFKAL80ETC concert")</span>
-				{
-<span style = "background-color:#fdd">					if(items[i].sellIn &lt; 11)</span>
-					{
-<span style = "background-color:#fdd">						if(items[i].quality &lt; 50)</span>
-						{
-<span style = "background-color:#fdd">							items[i].quality = items[i].quality + 1;</span>
+<span style = "background-color:#dfd">				if(items[i].name == "Backstage passes to a TAFKAL80ETC concert") {
+					if(items[i].sellIn &lt; 11) {
+						if(items[i].quality &lt; 50) {
+							items[i].quality = items[i].quality + 1;</span>
 						}
 					}
 
-<span style = "background-color:#fdd">					if(items[i].sellIn &lt; 6)</span>
-					{
-<span style = "background-color:#fdd">						if(items[i].quality &lt; 50)</span>
-						{
-<span style = "background-color:#fdd">							items[i].quality = items[i].quality + 1;</span>
+<span style = "background-color:#dfd">					if(items[i].sellIn &lt; 6) {
+						if(items[i].quality &lt; 50) {
+							items[i].quality = items[i].quality + 1;</span>
 						}
 					}
 				}
 			}
 		}
 
-<span style = "background-color:#dfd">		if(items[i].name != "Sulfuras, Hand of Ragnaros")</span>
-		{
-<span style = "background-color:#dfd">			items[i].sellIn = items[i].sellIn - 1;</span>
+<span style = "background-color:#dfd">		if(items[i].name != "Sulfuras, Hand of Ragnaros") {
+			items[i].sellIn = items[i].sellIn - 1;</span>
 		}
 
-<span style = "background-color:#dfd">		if(items[i].sellIn &lt; 0)</span>
-		{
-<span style = "background-color:#dfd">			if(items[i].name != "Aged Brie")</span>
-			{
-<span style = "background-color:#dfd">				if(items[i].name != "Backstage passes to a TAFKAL80ETC concert")</span>
-				{
-<span style = "background-color:#dfd">					if(items[i].quality &gt; 0)</span>
-					{
-<span style = "background-color:#fdd">						if(items[i].name != "Sulfuras, Hand of Ragnaros")</span>
-						{
-<span style = "background-color:#fdd">							items[i].quality = items[i].quality - 1;</span>
+<span style = "background-color:#dfd">		if(items[i].sellIn &lt; 0) {
+			if(items[i].name != "Aged Brie") {
+				if(items[i].name != "Backstage passes to a TAFKAL80ETC concert") {
+					if(items[i].quality &gt; 0) {
+						if(items[i].name != "Sulfuras, Hand of Ragnaros") {
+							items[i].quality = items[i].quality - 1;</span>
 						}
 					}
 <span style = "background-color:#dfd">				}</span>
-				else
-				{
-<span style = "background-color:#fdd">					items[i].quality = items[i].quality - items[i].quality;</span>
+				else {
+<span style = "background-color:#dfd">					items[i].quality = items[i].quality - items[i].quality;</span>
 				}
 <span style = "background-color:#dfd">			}</span>
-			else
-			{
-<span style = "background-color:#fdd">				if(items[i].quality &lt; 50)</span>
-				{
-<span style = "background-color:#fdd">					items[i].quality = items[i].quality + 1;</span>
+			else {
+<span style = "background-color:#dfd">				if(items[i].quality &lt; 50) {
+					items[i].quality = items[i].quality + 1;</span>
 				}
 			}
 		}

@@ -16,22 +16,20 @@
 #include "gmock/gmock.h"
 #endif
 
-void print_item(const Item&amp; item)
-<span style = "background-color:#fdd">{
+<span style = "background-color:#fdd">void print_item(const Item&amp; item){
 	std::cout &lt;&lt; item.name &lt;&lt; ", " &lt;&lt; item.sellIn &lt;&lt; ", " &lt;&lt; item.quality &lt;&lt; std::endl;
 }</span>
 
 
 #ifdef _DEBUG
 
-<span style = "background-color:#dfd">int main() {
+<span style = "background-color:#dfd">int main(){
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
 }</span>
 #else
 
-int main()
-{
+int main(){
 	std::vector&lt;Item&gt; items;
 
 	items.push_back({"+5 Dexterity Vest", 10, 20});
@@ -45,12 +43,10 @@ int main()
 
 	GildedRose app(items);
 
-	for(int day = 0; day &lt;= 30; day++)
-	{
+	for(int day = 0; day &lt;= 30; day++){
 		std::cout &lt;&lt; "-------- day " &lt;&lt; day &lt;&lt; " --------" &lt;&lt; std::endl;
 		std::cout &lt;&lt; "name, sellIn, quality" &lt;&lt; std::endl;
-		for(auto&amp; item : items)
-		{
+		for(auto&amp; item : items){
 			print_item(item);
 		}
 		std::cout &lt;&lt; std::endl;
