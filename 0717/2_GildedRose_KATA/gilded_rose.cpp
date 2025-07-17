@@ -23,21 +23,16 @@ void GildedRose::updateQuality() {
 
 void GildedRose::updateQuality(Item & item)
 {
-	GildedRoseItem* gildedRoseItem = nullptr;
-	if(item.name == AGED_BRIE) {
-		gildedRoseItem = new AgedBrieItem(&item);
-	}
-	else if(item.name == BACKSTAGE_PASS) {
-		gildedRoseItem = new BackstagePassesItem(&item);
-	}
-	else if(item.name == SULFURAS) {
-		gildedRoseItem = new SulfurasItem(&item);
-	}
-	else {
-		gildedRoseItem = new NormalItem(&item);
-	}
-
+	GildedRoseItem* gildedRoseItem = getGildedRoseItem(item);
 	gildedRoseItem->updateQuality();
+}
+
+GildedRoseItem * GildedRose::getGildedRoseItem(Item & item)
+{
+	if(item.name == AGED_BRIE) return new AgedBrieItem(&item);
+	else if(item.name == BACKSTAGE_PASS) return new BackstagePassesItem(&item);
+	else if(item.name == SULFURAS) return new SulfurasItem(&item);
+	else return new NormalItem(&item);
 }
 
 void GildedRose::updateSellIn(Item & item) {
@@ -45,3 +40,4 @@ void GildedRose::updateSellIn(Item & item) {
 		item.sellIn = item.sellIn - 1;
 	}
 }
+
