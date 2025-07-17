@@ -18,19 +18,19 @@ void GildedRose::updateQuality() {
 		Item & item = items[i];
 		if(item.name == AGED_BRIE) {
 			AgedBrieItem* agedBrieItem = new AgedBrieItem(&item);
-			agedBrieItem->updateQualityForAgedBrie();
+			agedBrieItem->updateQuality();
 		}
 		else if(item.name == BACKSTAGE_PASS) {
 			BackstagePassesItem* backstagePassesItem = new BackstagePassesItem(&item);
-			backstagePassesItem->updateQualityForBackstagePasses();
+			backstagePassesItem->updateQuality();
 		}
 		else if(item.name == SULFURAS) {
 			SulfurasItem* sulfurasItem = new SulfurasItem(&item);
-			sulfurasItem->updateQualityForSulfuras();
+			sulfurasItem->updateQuality();
 		}
 		else {
 			NormalItem* normalItem = new NormalItem(&item);
-			normalItem->updateQualityForNormalItem();
+			normalItem->updateQuality();
 		}
 
 		updateSellIn(item);

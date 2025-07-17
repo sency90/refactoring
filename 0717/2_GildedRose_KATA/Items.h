@@ -8,7 +8,7 @@ private:
 public:
 	AgedBrieItem(Item * item_): item_(item_) {}
 
-	void updateQualityForAgedBrie() {
+	void updateQuality() {
 		Item & item = *item_;
 		if(item.quality < 50) {
 			item.quality = item.quality + 1;
@@ -28,7 +28,7 @@ private:
 public:
 	BackstagePassesItem(Item * item_): item_(item_) {}
 
-	void updateQualityForBackstagePasses() {
+	void updateQuality() {
 		Item & item = *item_;
 		if(item.quality < 50) {
 			item.quality = item.quality + 1;
@@ -59,7 +59,7 @@ private:
 public:
 	SulfurasItem(Item* item_): item_(item_) {}
 
-	void updateQualityForSulfuras() {
+	void updateQuality() {
 		Item & item = *item_;
 	}
 };
@@ -71,7 +71,7 @@ private:
 public:
 	NormalItem(Item* item_): item_(item_) {}
 
-	void updateQualityForNormalItem() {
+	void updateQuality() {
 		Item & item = *item_;
 		if(item.quality > 0) {
 			item.quality = item.quality - 1;
