@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gilded_rose.h" />
+    <ClInclude Include="Items.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

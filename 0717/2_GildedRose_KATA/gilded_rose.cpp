@@ -1,4 +1,5 @@
 #include "gilded_rose.h"
+#include "items.h"
 
 using std::vector;
 using std::string;
