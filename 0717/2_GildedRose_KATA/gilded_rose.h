@@ -17,7 +17,6 @@ public:
 
 	void updateQuality();
 	void updateSellIn(Item & item);
-	void updateQualityForAgedBrie(Item & item);
 	void updateQualityForBackstagePasses(Item & item);
 	void updateQualityForNormalItem(Item & item);
 	void updateQualityForSulfuras(Item & item);

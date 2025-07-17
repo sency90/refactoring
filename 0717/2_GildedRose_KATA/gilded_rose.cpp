@@ -17,7 +17,8 @@ void GildedRose::updateQuality() {
 	for(int i = 0; i < items.size(); i++) {
 		Item & item = items[i];
 		if(item.name == AGED_BRIE) {
-			updateQualityForAgedBrie(item);
+			AgedBrieItem* agedBrieItem = new AgedBrieItem(&item);
+			agedBrieItem->updateQualityForAgedBrie();
 		}
 		else if(item.name == BACKSTAGE_PASS) {
 			updateQualityForBackstagePasses(item);
@@ -37,17 +38,6 @@ void GildedRose::updateQuality() {
 void GildedRose::updateSellIn(Item & item) {
 	if(item.name != SULFURAS) {
 		item.sellIn = item.sellIn - 1;
-	}
-}
-
-void GildedRose::updateQualityForAgedBrie(Item & item) {
-	if(item.quality < 50) {
-		item.quality = item.quality + 1;
-	}
-	if(item.sellIn < 1) {
-		if(item.quality < 50) {
-			item.quality = item.quality + 1;
-		}
 	}
 }
 
