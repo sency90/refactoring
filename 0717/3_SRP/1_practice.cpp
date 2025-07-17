@@ -1,3 +1,4 @@
+#if 0
 #include <iostream>
 
 using std::cout;
@@ -74,3 +75,4 @@ public:
 int main() {
 	return 0;
 }
+#endif

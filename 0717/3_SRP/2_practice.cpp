@@ -30,3 +30,16 @@ private:
 	int max_fuel_;
 	int remaining_fuel_;
 };
+
+class Shell {
+public:
+	void ComeToCustomerAndInsertFull(Vehicle *customer) {
+		int ret = customer->GetMaxFuel();
+		customer->SetRemainingFuel(ret);
+	}
+
+};
+
+int main() {
+	return 0;
+}
