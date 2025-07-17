@@ -4,7 +4,7 @@
 using std::vector;
 using std::string;
 
-TEST(GildedRoseTest, Foo) {
+TEST(GildedRoseTest, Foo){
 	//Arrange
 	vector<Item> items;
 	//items.push_back(Item("Foo", 0, 0));

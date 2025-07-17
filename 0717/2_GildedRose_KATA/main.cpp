@@ -5,22 +5,20 @@
 #include "gmock/gmock.h"
 #endif
 
-void print_item(const Item& item)
-{
+void print_item(const Item& item){
 	std::cout << item.name << ", " << item.sellIn << ", " << item.quality << std::endl;
 }
 
 
 #ifdef _DEBUG
 
-int main() {
+int main(){
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
 }
 #else
 
-int main()
-{
+int main(){
 	std::vector<Item> items;
 
 	items.push_back({"+5 Dexterity Vest", 10, 20});
@@ -34,12 +32,10 @@ int main()
 
 	GildedRose app(items);
 
-	for(int day = 0; day <= 30; day++)
-	{
+	for(int day = 0; day <= 30; day++){
 		std::cout << "-------- day " << day << " --------" << std::endl;
 		std::cout << "name, sellIn, quality" << std::endl;
-		for(auto& item : items)
-		{
+		for(auto& item : items){
 			print_item(item);
 		}
 		std::cout << std::endl;
