@@ -39,7 +39,7 @@ void GildedRose::updateQuality() {
 		}
 		else if(item.name == SULFURAS) {
 		}
-		else if(item.name != SULFURAS) {
+		else {
 			if(item.quality > 0) {
 				item.quality = item.quality - 1;
 			}
