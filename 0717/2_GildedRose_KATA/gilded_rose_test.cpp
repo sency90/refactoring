@@ -51,6 +51,19 @@ TEST(GildedRoseTest, NoNameSellin0Quality1) {
 	EXPECT_EQ(0, items[0].quality);
 }
 
+//noname에서 sellin이 음수가 되면 quality는 2씩 떨어진다.
+TEST(GildedRoseTest, NoNameSellinM1Quality2) {
+	vector<Item> items;
+	items.emplace_back(NONAME, -1,2);
+	GildedRose app{ items };
+
+	app.updateQuality();
+
+	EXPECT_EQ(-2, items[0].sellIn);
+	EXPECT_EQ(0, items[0].quality);
+}
+
+
 //전설 Item인 SULFURAS는 sellIn과 quality가 절대 떨어지지 않는다.
 TEST(GildedRoseTest, SulfurasSellin0Quality80) {
 	vector<Item> items;
@@ -88,6 +101,18 @@ TEST(GildedRoseTest, AgedBrieSellin0Quality50) {
 	EXPECT_EQ(-1, items[0].sellIn);
 	EXPECT_EQ(50, items[0].quality);
 }
+
+TEST(GildedRoseTest, AgedBrieSellinM1Quality48) {
+	vector<Item> items;
+	items.emplace_back(AGED_BRIE, -1, 48);
+	GildedRose app{ items };
+
+	app.updateQuality();
+
+	EXPECT_EQ(-2, items[0].sellIn);
+	EXPECT_EQ(50, items[0].quality);
+}
+
 
 //콘서트 티켓의 sellIn이 음수가되면, quality는 0이 된다.
 TEST(GildedRoseTest, BackstagePassSellin0Quality49) {
