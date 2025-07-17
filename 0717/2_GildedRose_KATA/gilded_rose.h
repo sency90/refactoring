@@ -16,6 +16,11 @@ public:
 	GildedRose(std::vector<Item>& items);
 
 	void updateQuality();
+	void updateSellIn(Item & item);
+	void updateQualityForAgedBrie(Item & item);
+	void updateQualityForBackstagePasses(Item & item);
+	void updateQualityForNormalItem(Item & item);
+	void updateQualityForSulfuras(Item & item);
 	//매일 자정 모든 아이템의 값들이 갱신됨
 	//판매가능 기간이 지나면, 품질은 2배씩 빨리 떨어짐.
 	//quality<0 불가
