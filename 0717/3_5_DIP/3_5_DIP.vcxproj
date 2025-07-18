@@ -128,8 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="pilot.cpp" />
-    <ClCompile Include="racing_car.cpp" />
+    <ClCompile Include="Pilot.cpp" />
+    <ClCompile Include="RacingCar.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Pilot.h" />
+    <ClInclude Include="RacingCar.h" />
+    <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
