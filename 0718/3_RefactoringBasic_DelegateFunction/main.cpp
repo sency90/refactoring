@@ -2,24 +2,16 @@
 #include "gmock/gmock.h"
 using namespace std;
 
-int sumFrom1to100() {
-	int result = 0;
-	for(int num = 1; num <= 100; num++) {
-		result += num;
-	}
-	return result;
+int rangedSum(int b, int e) {
+	return (e)*(e+1)/2 -(b-1)*b/2;
 }
 
 int func() {
-	return sumFrom1to100() * sumFrom1to100();
-}
-
-int rangedSum(int a, int b) {
-	return 0;
+	return rangedSum(1,100) * rangedSum(1,100);
 }
 
 TEST(test, sumFrom1to100) {
-	int ret = sumFrom1to100();
+	int ret = rangedSum(1,100);
 	EXPECT_EQ(5050, ret);
 }
 
