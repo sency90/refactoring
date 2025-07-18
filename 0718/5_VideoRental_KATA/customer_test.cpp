@@ -1,34 +1,41 @@
 #include "gmock/gmock.h"
 #include "customer.cpp"
 
-TEST(CustomerTest, StatementForNoRental) {
-	//arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
+using namespace testing;
 
-	//act
+namespace {
+	const std::string DUMMY_NAME("NAME_NOT_IMPORTANT");
+	const std::string DUMMY_TITLE("TITLE_NOT_IMPORTANT");
+};
+
+class CustomerTestFixture: public Test{
+public:
+	Customer customer;
+	CustomerTestFixture(): customer(string(DUMMY_NAME)) {}
+
+	Rental getRentalFor(int daysRented, int priceCode) {
+		Movie movie{string(DUMMY_TITLE), priceCode};
+		return Rental{movie, daysRented};
+	}
+
+};
+
+TEST_F(CustomerTestFixture, StatementForNoRental) {
 	string statement = customer.statement();
 
 	//assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"Amount owed is 0.0\n"}
 		+ string{"You earned 0 frequent renter points"}
 	);
 }
 
-TEST(CustomerTest, StatementForRegularMovieRentalForLessThan3Days) {
-	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie movie{string{"TITLE_NOT_IMPORTANT"}, Movie::REGULAR};
-	int daysRented = 2;
-	Rental rental{movie, daysRented};
+TEST_F(CustomerTestFixture, StatementForRegularMovieRentalForLessThan3Days) {
+	Rental rental = getRentalFor(2, Movie::REGULAR);
 	customer.addRental(rental);
 
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t2.0\n"}
 		+ string{"Amount owed is 2.0\n"}
@@ -37,19 +44,11 @@ TEST(CustomerTest, StatementForRegularMovieRentalForLessThan3Days) {
 }
 
 
-TEST(CustomerTest, StatementForRegularMovieRentalForMoreThan2Days) {
-	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie movie{string{"TITLE_NOT_IMPORTANT"}, Movie::REGULAR};
-	int daysRented = 3;
-	Rental rental{movie, daysRented};
+TEST_F(CustomerTestFixture, StatementForRegularMovieRentalForMoreThan2Days) {
+	Rental rental = getRentalFor(3, Movie::REGULAR);
 	customer.addRental(rental);
 
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t3.5\n"}
 		+ string{"Amount owed is 3.5\n"}
@@ -57,39 +56,11 @@ TEST(CustomerTest, StatementForRegularMovieRentalForMoreThan2Days) {
 	);
 }
 
-TEST(CustomerTest, StatementForNewReleaseMovie) {
-	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie movie{string{"TITLE_NOT_IMPORTANT"}, Movie::NEW_RELEASE};
-	int daysRented = 1;
-	Rental rental{movie, daysRented};
+TEST_F(CustomerTestFixture, StatementForNewReleaseMovie) {
+	Rental rental = getRentalFor(3, Movie::CHILDREN);
 	customer.addRental(rental);
 
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
-		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
-		+ string{"\tTITLE_NOT_IMPORTANT\t3.0\n"}
-		+ string{"Amount owed is 3.0\n"}
-		+ string{"You earned 1 frequent renter points"}
-	);
-}
-
-TEST(CustomerTest, StatementForChildrenMovieRentalMoreThan2Days) {
-	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie movie{string{"TITLE_NOT_IMPORTANT"}, Movie::CHILDREN};
-	int daysRented = 3;
-	Rental rental{movie, daysRented};
-	customer.addRental(rental);
-
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t1.5\n"}
 		+ string{"Amount owed is 1.5\n"}
@@ -97,19 +68,12 @@ TEST(CustomerTest, StatementForChildrenMovieRentalMoreThan2Days) {
 	);
 }
 
-TEST(CustomerTest, StatementForChildrenMovieRentalMoreThan3Days) {
+TEST_F(CustomerTestFixture, StatementForChildrenMovieRentalMoreThan3Days) {
 	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie movie{string{"TITLE_NOT_IMPORTANT"}, Movie::CHILDREN};
-	int daysRented = 4;
-	Rental rental{movie, daysRented};
+	Rental rental = getRentalFor(4, Movie::CHILDREN);
 	customer.addRental(rental);
 
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t3.0\n"}
 		+ string{"Amount owed is 3.0\n"}
@@ -117,19 +81,12 @@ TEST(CustomerTest, StatementForChildrenMovieRentalMoreThan3Days) {
 	);
 }
 
-TEST(CustomerTest, StatementForNewReleaseMovieRentalMoreThan1Day) {
+TEST_F(CustomerTestFixture, StatementForNewReleaseMovieRentalMoreThan1Day) {
 	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie movie{string{"TITLE_NOT_IMPORTANT"}, Movie::NEW_RELEASE};
-	int daysRented = 2;
-	Rental rental{movie, daysRented};
+	Rental rental = getRentalFor(2, Movie::NEW_RELEASE);
 	customer.addRental(rental);
 
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t6.0\n"}
 		+ string{"Amount owed is 6.0\n"}
@@ -137,21 +94,13 @@ TEST(CustomerTest, StatementForNewReleaseMovieRentalMoreThan1Day) {
 	);
 }
 
-TEST(CustomerTest, StatementForFewMovieRentals) {
+TEST_F(CustomerTestFixture, StatementForFewMovieRentals) {
 	// arrange
-	Customer customer{string{"NAME_NOT_IMPORTANT"}};
-	Movie regularMovie{string{"TITLE_NOT_IMPORTANT"}, Movie::REGULAR};
-	Movie newReleaseMovie{string{"TITLE_NOT_IMPORTANT"}, Movie::NEW_RELEASE};
-	Movie childrenMovie{string{"TITLE_NOT_IMPORTANT"}, Movie::CHILDREN};
-	customer.addRental(Rental{regularMovie, 1});
-	customer.addRental(Rental{newReleaseMovie, 4});
-	customer.addRental(Rental{childrenMovie, 4});
+	customer.addRental(getRentalFor(1, Movie::REGULAR));
+	customer.addRental(getRentalFor(4, Movie::NEW_RELEASE));
+	customer.addRental(getRentalFor(4, Movie::CHILDREN));
 
-	// act
-	string statement = customer.statement();
-
-	// assert
-	EXPECT_EQ(statement, ""
+	EXPECT_EQ(customer.statement(), ""
 		+ string{"Rental Record for NAME_NOT_IMPORTANT\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t2.0\n"}
 		+ string{"\tTITLE_NOT_IMPORTANT\t12.0\n"}
