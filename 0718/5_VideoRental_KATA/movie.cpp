@@ -9,14 +9,13 @@ public:
 	static const int NEW_RELEASE = 1;
 	static const int REGULAR = 0;
 
-	Movie(const string& title, int price_code) : title{ title }, priceCode{ price_code } {}
+	Movie(const string& title, int price_code) : title{title}, priceCode{price_code} {}
 
 	int getPriceCode() {
 		return priceCode;
 	}
 
-	void setPriceCode(int price_code)
-	{
+	void setPriceCode(int price_code) {
 		priceCode = price_code;
 	}
 

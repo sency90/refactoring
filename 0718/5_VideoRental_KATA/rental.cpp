@@ -2,13 +2,13 @@
 
 class Rental {
 public:
-	Rental(const Movie &movie, int days_rented) : movie{ movie }, daysRented{ days_rented } {	}
+	Rental(const Movie &movie, int days_rented) : movie{movie}, daysRented{days_rented} {}
 
 	int getDaysRented() const {
 		return daysRented;
 	}
 
- 	Movie getMovie() {
+	Movie getMovie() {
 		return movie;
 	}
 
