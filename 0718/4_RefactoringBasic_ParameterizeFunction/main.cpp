@@ -5,32 +5,38 @@
 
 class TaxCalculator {
 public:
+	enum KindOf {
+		LOWER, MIDDLE, UPPER
+	};
+
 	double calculateTax(double income) {
 		double tax = 0;
-		tax += lowerBracket(income) * 0.1;
-		tax += middleBracket(income) * 0.2;
-		tax += upperBracket(income) * 0.3;
+		tax += whichBracket(income, LOWER) * 0.1;
+		tax += whichBracket(income, MIDDLE) * 0.2;
+		tax += whichBracket(income, UPPER) * 0.3;
 		return tax;
 	}
 
 private:
-	double lowerBracket(double income) {
-		return std::min(income, 30000.0);
-	}
-
-	double middleBracket(double income) {
-		return (income > 30000) ? std::min(income, 100000.0) - 30000 : 0;
-	}
-
-	double upperBracket(double income) {
-		return (income > 100000) ? income - 100000 : 0;
+	double whichBracket(double income, KindOf kindOf) {
+		if(kindOf == LOWER) return std::min(income, 30000.0);
+		else if(kindOf == MIDDLE) return (income > 30000) ? std::min(income, 100000.0) - 30000 : 0;
+		else if(kindOf == UPPER) return (income > 100000) ? income - 100000 : 0;
 	}
 };
 
-TEST(a, b) {
+TEST(TS, TC1) {
 	TaxCalculator calc;
 	EXPECT_EQ(calc.calculateTax(15000), 1500);
+}
+
+TEST(TS, TC2) {
+	TaxCalculator calc;
 	EXPECT_EQ(calc.calculateTax(31000), 3200);
+}
+
+TEST(TS, TC3) {
+	TaxCalculator calc;
 	EXPECT_EQ(calc.calculateTax(100200), 17060);
 }
 
