@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-//변수들을 각 의미에 맞도록 분리함.
+//ex1. 변수들을 각 의미에 맞도록 분리함.
 int main() {
 
 	//읽기 전용 변수는 const를 꼭 붙여주자. 그래야 가독성이 좋아진다.
