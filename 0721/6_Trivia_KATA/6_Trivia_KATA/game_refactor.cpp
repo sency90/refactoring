@@ -1,13 +1,82 @@
 #pragma once
 #include "game.h"
+#include <queue>
+#include <map>
+#define interface struct
+#define Question std::string
+
+namespace{
+	constexpr int INIT_QUESTION_CNT = 50;
+};
+
+class Questions{
+public:
+	virtual Question getQuestion() {
+		if(questions.empty()) {
+			return std::string();
+		}
+		std::string ret = questions.front();
+		questions.pop();
+		return ret;
+	}
+	virtual void push(const Question & question) {
+		questions.push(question);
+	}
+	virtual ~Questions() {}
+private:
+	std::queue<Question> questions;
+};
+
+class PopQuestions : public Questions {};
+class ScienceQuestions : public Questions {};
+class SportsQuestions : public Questions {};
+class RockQuestions : public Questions {};
+
+class QuestionsFactory {
+private:
+	std::map<std::string, Questions*> questionsDic;
+public:
+	Question getOneQuestion(const std::string & questionsName) const {
+		if(questionsDic.count(questionsName) == 0) {
+			return Question();
+		}
+		return questionsDic.at(questionsName)->getQuestion();
+	}
+	void setQuestions(const std::string & category) {
+		if(category == "Pop") questionsDic["Pop"] = new PopQuestions();
+		else if(category == "Science") questionsDic["Science"] = new ScienceQuestions();
+		else if(category == "Sports") questionsDic["Sports"] = new SportsQuestions();
+		else if(category == "Rock") questionsDic["Rock"] = new RockQuestions();
+		else return;
+		
+		Questions & questions = *questionsDic.at(category);
+		for(int i = 0; i < INIT_QUESTION_CNT; i++) {
+			string question = category + " Question " + to_string(i);
+			questions.push(question);
+		}
+	}
+	void clear() {
+		for(auto & it : questionsDic) {
+			if(it.second != nullptr) {
+				delete it.second;
+			}
+		}
+		questionsDic.clear();
+	}
+	virtual ~QuestionsFactory() {
+		clear();
+	}
+};
+
+
 
 class GameRefactor: public IGame {
 public:
 	GameRefactor(): currentPlayer{0}, location{}, coins{} {
-		makeQuestion(popQuestions, "Pop");
-		makeQuestion(scienceQuestions, "Science");
-		makeQuestion(sportsQuestions, "Sports");
-		makeQuestion(rockQuestions, "Rock");
+		questionsFactory.setQuestions("Pop");
+		questionsFactory.setQuestions("Science");
+		questionsFactory.setQuestions("Sports");
+		questionsFactory.setQuestions("Rock");
 	}
 
 	void rolling(int roll) {
@@ -90,13 +159,6 @@ public:
 	}
 
 private:
-	void makeQuestion(list<string>& cards, string category) {
-		for(int i = 0; i < 50; i++) {
-			string question = category + " Question " + to_string(i);
-			cards.push_back(question);
-		}
-	}
-
 	bool isSuccessExitPenaltyBox(int roll) {
 		return inPenaltyBox[currentPlayer] && roll % 2 == 1;
 	}
@@ -122,28 +184,8 @@ private:
 
 	void askQuestion() {
 		string category = currentCategory();
-
 		cout << "The category is " << category << endl;
-
-		if(category == "Pop") {
-			cout << popQuestions.front() << endl;
-			popQuestions.pop_front();
-		}
-
-		if(category == "Science") {
-			cout << scienceQuestions.front() << endl;
-			scienceQuestions.pop_front();
-		}
-
-		if(category == "Sports") {
-			cout << sportsQuestions.front() << endl;
-			sportsQuestions.pop_front();
-		}
-
-		if(category == "Rock") {
-			cout << rockQuestions.front() << endl;
-			rockQuestions.pop_front();
-		}
+		cout << questionsFactory.getOneQuestion(category) << endl;
 	}
 
 	string currentCategory() {
@@ -158,6 +200,8 @@ private:
 		bool isFinishGame = (coins[currentPlayer] == 6);
 		return !isFinishGame;
 	}
+
+private:
 	const bool CONTINUE_GAME = true;
 	const bool SUCCESS_ADD_PLAYER = true;
 
@@ -167,11 +211,12 @@ private:
 	int coins[6];
 
 	bool inPenaltyBox[6];
+	QuestionsFactory questionsFactory;
 
-	list<string> popQuestions;
-	list<string> scienceQuestions;
-	list<string> sportsQuestions;
-	list<string> rockQuestions;
+	//list<string> popQuestions;
+	//list<string> scienceQuestions;
+	//list<string> sportsQuestions;
+	//list<string> rockQuestions;
 
 	int currentPlayer;
 };
