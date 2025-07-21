@@ -1,3 +1,17 @@
+/*
+Game Class의 역할이 무엇일까?
+이게 애매하다.
+심판 역할인가?
+Game이 심판이 될 순 없잖아..
+
+실세계를 바탕으로 Game의 역할을 생각해보면,
+역할이 있기 보다는 Game내에서 Judge(심판), Player, Questions가 있다고 볼 수 있음.
+각각의 객체는 이를 조작하는 Handler가 있다고 보고,
+Game이 Start되면, registerJudge(), registerPlayer(), setQuestions()하고..
+Game진행은 Judge가 하는게 맞는 것 같음.
+
+강사님은 어떻게 변경했는지 다시 한번 확인 필요
+*/
 #pragma once
 #include "game.h"
 #include <queue>
@@ -5,11 +19,12 @@
 #define interface struct
 #define Question std::string
 
-namespace{
+namespace {
 	constexpr int INIT_QUESTION_CNT = 50;
+	constexpr int LOCATION_CNT = 12;
 };
 
-class Questions{
+class Questions {
 public:
 	virtual Question getQuestion() {
 		if(questions.empty()) {
@@ -19,7 +34,7 @@ public:
 		questions.pop();
 		return ret;
 	}
-	virtual void push(const Question & question) {
+	virtual void push(const Question& question) {
 		questions.push(question);
 	}
 	virtual ~Questions() {}
@@ -27,44 +42,112 @@ private:
 	std::queue<Question> questions;
 };
 
-class PopQuestions : public Questions {};
-class ScienceQuestions : public Questions {};
-class SportsQuestions : public Questions {};
-class RockQuestions : public Questions {};
+class PopQuestions: public Questions {};
+class ScienceQuestions: public Questions {};
+class SportsQuestions: public Questions {};
+class RockQuestions: public Questions {};
 
-class QuestionsFactory {
+class QuestionsHandler {
 private:
 	std::map<std::string, Questions*> questionsDic;
 public:
-	Question getOneQuestion(const std::string & questionsName) const {
+	Question getOneQuestion(const std::string& questionsName) const {
 		if(questionsDic.count(questionsName) == 0) {
 			return Question();
 		}
 		return questionsDic.at(questionsName)->getQuestion();
 	}
-	void setQuestions(const std::string & category) {
+	void setQuestions(const std::string& category) {
 		if(category == "Pop") questionsDic["Pop"] = new PopQuestions();
 		else if(category == "Science") questionsDic["Science"] = new ScienceQuestions();
 		else if(category == "Sports") questionsDic["Sports"] = new SportsQuestions();
 		else if(category == "Rock") questionsDic["Rock"] = new RockQuestions();
 		else return;
-		
-		Questions & questions = *questionsDic.at(category);
+
+		Questions& questions = *questionsDic.at(category);
 		for(int i = 0; i < INIT_QUESTION_CNT; i++) {
 			string question = category + " Question " + to_string(i);
 			questions.push(question);
 		}
 	}
 	void clear() {
-		for(auto & it : questionsDic) {
+		for(auto& it : questionsDic) {
 			if(it.second != nullptr) {
 				delete it.second;
 			}
 		}
 		questionsDic.clear();
 	}
-	virtual ~QuestionsFactory() {
+	virtual ~QuestionsHandler() {
 		clear();
+	}
+};
+
+class Player {
+private:
+	std::string name;
+	int location, coins;
+	bool inPenaltyBox;
+
+public:
+	Player():location(0), coins(0), inPenaltyBox(false) {}
+	Player(const std::string& name):name(name), location(0), coins(0), inPenaltyBox(false) {}
+
+	void goNextLocation(int roll) {
+		int nextLocation = (location + roll)%LOCATION_CNT;
+		cout << name << "'s new location is " << nextLocation << endl;
+		location = nextLocation;
+	}
+	void goOutPenaltyBox() {
+		inPenaltyBox = false;
+	}
+	void goInPenaltyBox() {
+		inPenaltyBox = true;
+	}
+	void increaseOneCoin() {
+		coins++;
+		cout << name << " now has " << coins << " Gold Coins." << endl;
+	}
+
+	std::string getName() const {
+		return name;
+	}
+
+	int getCoins() const {
+		return coins;
+	}
+
+	bool isInPenaltyBox() const {
+		return inPenaltyBox;
+	}
+};
+
+class PlayerHandler {
+private:
+	int currentOrder;
+	std::vector<Player> playerList;
+public:
+	Player& getCurrentPlayerRef() {
+		return playerList[currentOrder];
+	}
+	void addPlayer(const std::string& name) {
+		playerList.emplace_back(name);
+	}
+	void nextPlayer() {
+		int nextOrder = (currentOrder+1)%playerList.size();
+		currentOrder = nextOrder;
+		cout << playerList[currentOrder].getName() << " is the current player" << endl;
+	}
+	void correctAnswerAndIncreaseOneCoin() {
+		cout << "Answer was correct!!!!" << endl;
+		playerList[currentOrder].increaseOneCoin();
+	}
+
+	bool isSuccessExitPenaltyBox(int roll) {
+		return playerList[currentOrder].isInPenaltyBox() && roll % 2 == 1;
+	}
+	bool isFailExitPenaltyBox(int roll) {
+		return playerList[currentOrder].isInPenaltyBox() && roll % 2 == 0;
 	}
 };
 
@@ -73,10 +156,10 @@ public:
 class GameRefactor: public IGame {
 public:
 	GameRefactor(): currentPlayer{0}, location{}, coins{} {
-		questionsFactory.setQuestions("Pop");
-		questionsFactory.setQuestions("Science");
-		questionsFactory.setQuestions("Sports");
-		questionsFactory.setQuestions("Rock");
+		questionsHandler.setQuestions("Pop");
+		questionsHandler.setQuestions("Science");
+		questionsHandler.setQuestions("Sports");
+		questionsHandler.setQuestions("Rock");
 	}
 
 	void rolling(int roll) {
@@ -104,8 +187,9 @@ public:
 		//이동한 곳에서 퀴즈 풀기
 		askQuestion();
 	}
+
 	bool correctAnswerQuizAndReturnIsContinueGame() { //정답
-	//감옥에서는 퀴즈를 풀 수가 없음.
+		//감옥에서는 퀴즈를 풀 수가 없음.
 		if(inPenaltyBox[currentPlayer]) {
 			return true;
 		}
@@ -135,6 +219,7 @@ public:
 		inPenaltyBox[currentPlayer] = true;
 		return CONTINUE_GAME;
 	}
+
 	bool isPlayable() {
 		return (howManyPlayers() >= 2);
 	}
@@ -168,7 +253,7 @@ private:
 	}
 	int getNextLocation(int currentPlace, int roll) {
 		int nextLocation = currentPlace + roll;
-		if(nextLocation >= 12) nextLocation -= 12;
+		if(nextLocation >= LOCATION_CNT) nextLocation -= LOCATION_CNT;
 
 		cout << players[currentPlayer] << "'s new location is " << nextLocation << endl;
 		return nextLocation;
@@ -185,7 +270,7 @@ private:
 	void askQuestion() {
 		string category = currentCategory();
 		cout << "The category is " << category << endl;
-		cout << questionsFactory.getOneQuestion(category) << endl;
+		cout << questionsHandler.getOneQuestion(category) << endl;
 	}
 
 	string currentCategory() {
@@ -211,7 +296,7 @@ private:
 	int coins[6];
 
 	bool inPenaltyBox[6];
-	QuestionsFactory questionsFactory;
+	QuestionsHandler questionsHandler;
 
 	//list<string> popQuestions;
 	//list<string> scienceQuestions;
