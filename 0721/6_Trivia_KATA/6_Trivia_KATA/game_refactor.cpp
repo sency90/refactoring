@@ -1,9 +1,9 @@
 #pragma once
 #include "game.h"
 
-class Game : public IGame {
+class GameRefactor : public IGame {
 public:
-	Game() : currentPlayer{ 0 }, places{}, purses{} {
+	GameRefactor() : currentPlayer{ 0 }, places{}, purses{} {
 		for (int i = 0; i < 50; i++) {
 			string str1 = "Pop Question " + to_string(i);
 			popQuestions.push_back(str1);
@@ -196,4 +196,3 @@ private:
 		return !(purses[currentPlayer] == 6);
 	}
 };
-

@@ -14,7 +14,7 @@ using std::endl;
 
 interface IGame {
 	virtual bool add(string player) = 0;
-	virtual void rolling() = 0;
+	virtual void rolling(int roll) = 0;
 	virtual bool wasCorrectlyAnswered() = 0;
 	virtual bool wrongAnswer() = 0;
 };
