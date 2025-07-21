@@ -4,7 +4,8 @@
 //#define CONSTRUCTOR_METHOD
 //#define SETTER_METHOD
 //#define METHOD_CHAINING_METHOD
-#define JOSHUA_BLOCH_BUILDER_PATTERN
+//#define JOSHUA_BLOCH_BUILDER_PATTERN
+#define CPPSTYLE_JOSHUA_BLOCH_BUILDER_PATTERN
 
 class Cut {
 public:
@@ -76,8 +77,44 @@ public:
 			return new Cut(style_name, front, back, side);
 		}
 	private:
+		//Cut과 HairStyle에 동일한 변수가 2개 존재하는 문제가 있음.
 		std::string style_name;
 		int front=0, back=0, side=0;
+	};
+#elif defined CPPSTYLE_JOSHUA_BLOCH_BUILDER_PATTERN
+public:
+	Cut(const std::string & style_name, int front, int side, int back)
+		: style_name(style_name), front(front), side(side), back(back) {}
+		
+	class HairStyle {
+	public:
+		HairStyle():cut(new Cut()) {}
+
+		HairStyle& setStyleName(const std::string& style_name) {
+			cut->style_name = style_name;
+			return *this;
+		}
+		HairStyle& setFront(int f) {
+			cut->front = f;
+			return *this;
+		}
+		HairStyle& setSide(int s) {
+			cut->side = s;
+			return *this;
+		}
+		HairStyle& setBack(int b) {
+			cut->back = b;
+			return *this;
+		}
+
+		Cut* build() {
+			if(cut->style_name.empty() || cut->front==0 || cut->back==0 || cut->side==0) {
+				throw std::exception("ERROR!!");
+			}
+			return cut;
+		}
+	private:
+		Cut *cut = nullptr;
 	};
 #endif
 
@@ -108,6 +145,9 @@ int main() {
 	Cut & cut = (*(new Cut())).setStyleName("good-style").setFront(2).setBack(3).setSide(3);
 	cut.print();
 #elif defined JOSHUA_BLOCH_BUILDER_PATTERN
+	Cut *cut = Cut::HairStyle().setStyleName("good-style").setFront(2).setBack(3).setSide(3).build();
+	cut->print();
+#elif defined CPPSTYLE_JOSHUA_BLOCH_BUILDER_PATTERN
 	Cut *cut = Cut::HairStyle().setStyleName("good-style").setFront(2).setBack(3).setSide(3).build();
 	cut->print();
 #endif
