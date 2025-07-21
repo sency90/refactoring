@@ -36,7 +36,9 @@ public:
 	}
 };
 
-TEST_F(GameFixture, GoldenMaster) {
+INSTANTIATE_TEST_SUITE_P( GoldenMaster, GameFixture, Values(1, 50, 100, 777));
+
+TEST_P(GameFixture, GoldenMaster) {
 	Game originGame;
 	GameRefactor refactorGame;
 
