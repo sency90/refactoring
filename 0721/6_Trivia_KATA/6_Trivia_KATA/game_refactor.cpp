@@ -1,151 +1,170 @@
 #pragma once
 #include "game.h"
 
-class GameRefactor : public IGame {
+class GameRefactor: public IGame {
 public:
-	GameRefactor() : currentPlayer{ 0 }, places{}, purses{} {
-		for (int i = 0; i < 50; i++) {
-			string str1 = "Pop Question " + to_string(i);
-			popQuestions.push_back(str1);
+	GameRefactor(): currentPlayer{0}, location{}, coins{} {
+		makeQuestion(popQuestions, "Pop");
+		makeQuestion(scienceQuestions, "Science");
+		makeQuestion(sportsQuestions, "Sports");
+		makeQuestion(rockQuestions, "Rock");
+	}
 
-			string str2 = "Science Question " + to_string(i);
-			scienceQuestions.push_back(str2);
+	void rolling(int roll) {
+		//플레이어 선택
+		currentPlayer = getNextPlayer(currentPlayer);
 
-			string str3 = "Sports Question " + to_string(i);
-			sportsQuestions.push_back(str3);
+		//주사위 굴리기
+		cout << "They have rolled a " << roll << endl;
 
-			rockQuestions.push_back(createRockQuestion(i));
+		//만약 감옥인데, 탈출 실패시
+		if(isFailExitPenaltyBox(roll)) {
+			cout << players[currentPlayer] << " is not getting out of the penalty box" << endl;
+			return;
 		}
+
+		//만약 감옥인데, 탈출 성공시
+		if(isSuccessExitPenaltyBox(roll)) {
+			inPenaltyBox[currentPlayer] = false;
+			cout << players[currentPlayer] << " is getting out of the penalty box" << endl;
+		}
+
+		//주사위 눈금만큼 이동
+		location[currentPlayer] = getNextLocation(location[currentPlayer], roll);
+
+		//이동한 곳에서 퀴즈 풀기
+		askQuestion();
+	}
+	bool correctAnswerQuizAndReturnIsContinueGame() { //정답
+	//감옥에서는 퀴즈를 풀 수가 없음.
+		if(inPenaltyBox[currentPlayer]) {
+			return true;
+		}
+
+		//정답
+		cout << "Answer was correct!!!!" << endl;
+
+		//코인 UP
+		coins[currentPlayer]++;
+		cout << players[currentPlayer] << " now has "
+			<< coins[currentPlayer] << " Gold Coins." << endl;
+
+		return isContinueGameOrNot();
 	}
 
-	string createRockQuestion(int index) {
-		string indexStr = "Rock Question " + to_string(index);
-		return indexStr;
-	}
+	bool wrongAnswerQuizAndReturnIsContinueGame() { //틀렸음
 
+		//감옥이면 퀴즈 안풀었음
+		if(inPenaltyBox[currentPlayer]) {
+			return CONTINUE_GAME;
+		}
+
+		//오답, 감옥간다.
+		cout << "Question was incorrectly answered" << endl;
+		cout << players[currentPlayer] + " was sent to the penalty box" << endl;
+
+		inPenaltyBox[currentPlayer] = true;
+		return CONTINUE_GAME;
+	}
 	bool isPlayable() {
 		return (howManyPlayers() >= 2);
 	}
 
 	bool add(string playerName) {
+		currentPlayer = -1;
+
 		players.push_back(playerName);
-		places[howManyPlayers() - 1] = 0;
-		purses[howManyPlayers() - 1] = 0;
-		inPenaltyBox[howManyPlayers() - 1] = false;
+
+		int playerIndex = howManyPlayers() - 1;
+		location[playerIndex] = 0;
+		coins[playerIndex] = 0;
+		inPenaltyBox[playerIndex] = false;
 
 		cout << playerName << " was added" << endl;
 		cout << "They are player number " << players.size() << endl;
-		return true;
+		return SUCCESS_ADD_PLAYER;
 	}
 
 	int howManyPlayers() {
 		return (int)players.size();
 	}
 
-	void rolling(int roll) {
-		//int roll = rand() % 6 + 1;
-
-		cout << players[currentPlayer] << " is the current player" << endl;
-		cout << "They have rolled a " << roll << endl;
-
-		if (inPenaltyBox[currentPlayer]) {
-			if (roll % 2 != 0) {
-				isGettingOutOfPenaltyBox = true;
-
-				cout << players[currentPlayer] << " is getting out of the penalty box" << endl;
-				places[currentPlayer] = places[currentPlayer] + roll;
-				if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
-				cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
-				cout << "The category is " << currentCategory() << endl;
-				askQuestion();
-			}
-			else {
-				cout << players[currentPlayer] << " is not getting out of the penalty box" << endl;
-				isGettingOutOfPenaltyBox = false;
-			}
-
-		}
-		else {
-			places[currentPlayer] = places[currentPlayer] + roll;
-			if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
-			cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
-			cout << "The category is " << currentCategory() << endl;
-			askQuestion();
-		}
-	}
-
-	bool wasCorrectlyAnswered() {
-		if (inPenaltyBox[currentPlayer]) {
-			if (isGettingOutOfPenaltyBox) {
-				inPenaltyBox[currentPlayer] = false;
-				cout << "Answer was correct!!!!" << endl;
-
-				purses[currentPlayer]++;
-				cout << players[currentPlayer] << " now has "
-					<< purses[currentPlayer] << " Gold Coins." << endl;
-
-				bool winner = didPlayerWin();
-				currentPlayer++;
-				if (currentPlayer == players.size()) currentPlayer = 0;
-
-				return winner;
-			}
-			else {
-				currentPlayer++;
-				if (currentPlayer == players.size()) currentPlayer = 0;
-				return true;
-			}
-		}
-		else {
-			cout << "Answer was correct!!!!" << endl;
-
-			purses[currentPlayer]++;
-			cout << players[currentPlayer] << " now has "
-				<< purses[currentPlayer] << " Gold Coins." << endl;
-
-			bool winner = didPlayerWin();
-			currentPlayer++;
-			if (currentPlayer == players.size()) currentPlayer = 0;
-
-			return winner;
-		}
-	}
-
-	bool wrongAnswer() {
-		if (inPenaltyBox[currentPlayer]) {
-			if (isGettingOutOfPenaltyBox) {
-				cout << "Question was incorrectly answered" << endl;
-				cout << players[currentPlayer] + " was sent to the penalty box" << endl;
-				inPenaltyBox[currentPlayer] = true;
-
-				currentPlayer++;
-				if (currentPlayer == players.size()) currentPlayer = 0;
-				return true;
-			}
-			else {
-				currentPlayer++;
-				if (currentPlayer == players.size()) currentPlayer = 0;
-				return true;
-			}
-		}
-		else {
-			cout << "Question was incorrectly answered" << endl;
-			cout << players[currentPlayer] + " was sent to the penalty box" << endl;
-			inPenaltyBox[currentPlayer] = true;
-
-			currentPlayer++;
-			if (currentPlayer == players.size()) currentPlayer = 0;
-			return true;
-		}
-	}
-
 private:
+	void makeQuestion(list<string>& cards, string category) {
+		for(int i = 0; i < 50; i++) {
+			string question = category + " Question " + to_string(i);
+			cards.push_back(question);
+		}
+	}
+
+	bool isSuccessExitPenaltyBox(int roll) {
+		return inPenaltyBox[currentPlayer] && roll % 2 == 1;
+	}
+
+	bool isFailExitPenaltyBox(int roll) {
+		return inPenaltyBox[currentPlayer] && roll % 2 == 0;
+	}
+	int getNextLocation(int currentPlace, int roll) {
+		int nextLocation = currentPlace + roll;
+		if(nextLocation >= 12) nextLocation -= 12;
+
+		cout << players[currentPlayer] << "'s new location is " << nextLocation << endl;
+		return nextLocation;
+	}
+
+	int getNextPlayer(int currentPlayer) {
+		int nextPlayer = currentPlayer + 1;
+		if(nextPlayer == players.size()) nextPlayer = 0;
+
+		cout << players[nextPlayer] << " is the current player" << endl;
+		return nextPlayer;
+	}
+
+	void askQuestion() {
+		string category = currentCategory();
+
+		cout << "The category is " << category << endl;
+
+		if(category == "Pop") {
+			cout << popQuestions.front() << endl;
+			popQuestions.pop_front();
+		}
+
+		if(category == "Science") {
+			cout << scienceQuestions.front() << endl;
+			scienceQuestions.pop_front();
+		}
+
+		if(category == "Sports") {
+			cout << sportsQuestions.front() << endl;
+			sportsQuestions.pop_front();
+		}
+
+		if(category == "Rock") {
+			cout << rockQuestions.front() << endl;
+			rockQuestions.pop_front();
+		}
+	}
+
+	string currentCategory() {
+		if(location[currentPlayer] % 4 == 0) return "Pop";
+		if(location[currentPlayer] % 4 == 1) return "Science";
+		if(location[currentPlayer] % 4 == 2) return "Sports";
+		if(location[currentPlayer] % 4 == 3) return "Rock";
+		return "";
+	}
+
+	bool isContinueGameOrNot() {
+		bool isFinishGame = (coins[currentPlayer] == 6);
+		return !isFinishGame;
+	}
+	const bool CONTINUE_GAME = true;
+	const bool SUCCESS_ADD_PLAYER = true;
+
 	vector<string> players;
 
-	int places[6];
-	int purses[6];
+	int location[6];
+	int coins[6];
 
 	bool inPenaltyBox[6];
 
@@ -155,44 +174,4 @@ private:
 	list<string> rockQuestions;
 
 	int currentPlayer;
-	bool isGettingOutOfPenaltyBox;
-
-	void askQuestion() {
-		if (currentCategory() == "Pop") {
-			cout << popQuestions.front() << endl;
-			popQuestions.pop_front();
-		}
-
-		if (currentCategory() == "Science") {
-			cout << scienceQuestions.front() << endl;
-			scienceQuestions.pop_front();
-		}
-
-		if (currentCategory() == "Sports") {
-			cout << sportsQuestions.front() << endl;
-			sportsQuestions.pop_front();
-		}
-
-		if (currentCategory() == "Rock") {
-			cout << rockQuestions.front() << endl;
-			rockQuestions.pop_front();
-		}
-	}
-
-	string currentCategory() {
-		if (places[currentPlayer] == 0) return "Pop";
-		if (places[currentPlayer] == 4) return "Pop";
-		if (places[currentPlayer] == 8) return "Pop";
-		if (places[currentPlayer] == 1) return "Science";
-		if (places[currentPlayer] == 5) return "Science";
-		if (places[currentPlayer] == 9) return "Science";
-		if (places[currentPlayer] == 2) return "Sports";
-		if (places[currentPlayer] == 6) return "Sports";
-		if (places[currentPlayer] == 10) return "Sports";
-		return "Rock";
-	}
-
-	bool didPlayerWin() {
-		return !(purses[currentPlayer] == 6);
-	}
 };

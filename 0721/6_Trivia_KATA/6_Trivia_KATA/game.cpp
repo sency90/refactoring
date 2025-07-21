@@ -76,7 +76,7 @@ public:
 		}
 	}
 
-	bool wasCorrectlyAnswered() {
+	bool correctAnswerQuizAndReturnIsContinueGame() {
 		if (inPenaltyBox[currentPlayer]) {
 			if (isGettingOutOfPenaltyBox) {
 				inPenaltyBox[currentPlayer] = false;
@@ -113,7 +113,7 @@ public:
 		}
 	}
 
-	bool wrongAnswer() {
+	bool wrongAnswerQuizAndReturnIsContinueGame() {
 		if (inPenaltyBox[currentPlayer]) {
 			if (isGettingOutOfPenaltyBox) {
 				cout << "Question was incorrectly answered" << endl;

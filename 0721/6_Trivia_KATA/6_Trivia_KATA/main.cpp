@@ -25,9 +25,9 @@ public:
 			aGame.rolling(roll);
 
 			if(rand() % 9 == 7) {
-				notAWinner = aGame.wrongAnswer();
+				notAWinner = aGame.wrongAnswerQuizAndReturnIsContinueGame();
 			} else {
-				notAWinner = aGame.wasCorrectlyAnswered();
+				notAWinner = aGame.correctAnswerQuizAndReturnIsContinueGame();
 			}
 		} while(notAWinner);
 
