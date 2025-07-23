@@ -17,6 +17,6 @@ public:
 		int smallLen = std::min(len1,len2);
 		if(bigLen >= 2*smallLen) return ZERO_SCORE;
 
-		return static_cast<double>(smallLen)*LENGTH_PERFECT_SCORE/bigLen;
+		return static_cast<double>(2*smallLen-bigLen)*LENGTH_PERFECT_SCORE/smallLen;
 	}
 };

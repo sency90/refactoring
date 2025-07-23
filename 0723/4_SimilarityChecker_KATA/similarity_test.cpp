@@ -24,10 +24,10 @@ TEST_F(SimilarityFixture, LengthX2Over) {
 }
 
 TEST_F(SimilarityFixture, LengthPartScore1) {
-	validCheck(36.0, "ABC", "DEFGH");
+	validCheck(20.0, "ABC", "DEFGH");
 }
 
 TEST_F(SimilarityFixture, LengthPartScore2) {
-	validCheck(7.0*60/9, "ABCDEFG", "ABCDEFGHI");
+	validCheck((2*7.0-9)*60/7, "ABCDEFG", "ABCDEFGHI");
 }
 
