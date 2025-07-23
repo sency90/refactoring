@@ -23,3 +23,7 @@ TEST_F(SimilarityFixture, LengthX2Over) {
 	validCheck(0, "ABC", "GHIDEFABC");
 }
 
+TEST_F(SimilarityFixture, LengthPartScoreTotallyDifferent) {
+	validCheck(36, "ABC", "DEFGH");
+}
+

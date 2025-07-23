@@ -17,6 +17,7 @@ public:
 		int bigLen = std::max(len1,len2);
 		int smallLen = std::min(len1,len2);
 		if(bigLen >= 2*smallLen) return ZERO_SCORE;
-		else return UNREACHABLE_CODE;
+
+		return smallLen*60/bigLen;
 	}
 };
