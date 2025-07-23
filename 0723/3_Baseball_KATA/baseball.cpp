@@ -5,7 +5,7 @@
 using namespace std;
 
 struct GuessResult {
-public:
+private:
 	bool isSolved;
 	int strikes;
 	int balls;
@@ -51,18 +51,12 @@ public:
 		GuessResult guessResult;
 		for(int i=0; i<question.size(); i++) {
 			for(int j=0; j<guessNumber.size(); j++) {
-				if(question[i] == guessNumber[j]) {
-					if(i == j) {
-						guessResult.countStrike();
-						break;
-					} else {
-						guessResult.countBall();
-						break;
-					}
-				}
+				if(question[i] != guessNumber[j]) continue;
+				if(i == j) guessResult.countStrike();
+				else guessResult.countBall();
+				break;
 			}
 		}
-		
 		return guessResult;
 	}
 	void assertIllegalArgument(const std::string& guessNumber) {

@@ -30,6 +30,7 @@ TEST_F(BaseballFixture, ReturnSolvedResultIfMatchedNumber) {
 
 TEST_F(BaseballFixture, S2B0) {
 	GuessResult result = game.guess("124");
+
 	bool isEqual = (result == GuessResult{false, 2, 0});
 	EXPECT_TRUE(isEqual);
 }
