@@ -6,19 +6,18 @@ using namespace std;
 
 struct GuessResult {
 private:
-	bool isSolved;
 	int strikes;
 	int balls;
 
 public:
-	GuessResult():isSolved(false), strikes(0), balls(0) {}
-	GuessResult(bool isSolved, int strikes, int balls):isSolved(isSolved), strikes(strikes), balls(balls) {}
+	GuessResult():strikes(0), balls(0) {}
+	GuessResult(int strikes, int balls): strikes(strikes), balls(balls) {}
 	bool operator==(const GuessResult& rhs) const {
-		return isSolved == rhs.isSolved && strikes == rhs.strikes && balls == rhs.balls;
+		return strikes == rhs.strikes && balls == rhs.balls;
 	}
 
-	bool getIsSolved() const {
-		return isSolved;
+	bool isSolved() const {
+		return strikes==3;
 	}
 	int getStrikes() const {
 		return strikes;
@@ -29,9 +28,6 @@ public:
 
 	void countStrike() {
 		strikes++;
-		if(strikes==3) {
-			isSolved = true;
-		}
 	}
 	void countBall() {
 		balls++;
@@ -46,7 +42,7 @@ public:
 	GuessResult guess(const string& guessNumber) {
 		assertIllegalArgument(guessNumber);
 		if(guessNumber == question) {
-			return {true, 3, 0};
+			return answerGuessResult;
 		}
 		GuessResult guessResult;
 		for(int i=0; i<question.size(); i++) {
@@ -79,5 +75,6 @@ public:
 			|| guessNumber[1] == guessNumber[2];
 	}
 private:
+	const GuessResult answerGuessResult{3,0};
 	string question;
 };
