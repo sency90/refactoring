@@ -1,8 +1,10 @@
 #include <stdexcept>
 using namespace std;
-class Baseball{
+class Baseball {
 public:
-	void guess(const string & s) {
-		throw length_error("Must be three letters.");
+	void guess(const string& s) {
+		if(s.length() != 3) {
+			throw length_error("Must be three letters.");
+		}
 	}
 };
