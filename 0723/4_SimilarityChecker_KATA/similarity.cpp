@@ -23,5 +23,6 @@ public:
 
 	double getAplhaScore(const std::string & str1, const std::string & str2) {
 		if(str1 == str2) return ALPHA_PERFECT_SCORE; 
+		return ZERO_SCORE;
 	}
 };

@@ -38,3 +38,7 @@ TEST_F(SimilarityFixture, LengthPartScore2) {
 TEST_F(SimilarityFixture, AlphaSame) {
 	validAplhaCheck(40.0, "ABC", "ABC");
 }
+
+TEST_F(SimilarityFixture, AlphaTotallyDifferent) {
+	validAplhaCheck(0.0, "ABC", "DEFGH");
+}
