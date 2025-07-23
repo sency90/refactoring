@@ -6,8 +6,8 @@ using namespace testing;
 class SimilarityFixture: public Test{
 public:
 	Similarity similarity;
-	void validCheck(double expectedLenthScore, const std::string & str1, const std::string & str2) {
-		EXPECT_EQ(expectedLenthScore, similarity.getLengthScore(str1, str2));
+	void validCheck(double expectedLengthScore, const std::string & str1, const std::string & str2) {
+		EXPECT_EQ(expectedLengthScore, similarity.getLengthScore(str1, str2));
 	}
 };
 
