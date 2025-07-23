@@ -13,65 +13,87 @@ namespace {
 class SimilarityFixture: public Test{
 public:
 	Similarity similarity;
-	void validLengthCheck(double expectedLengthScore, const std::string & str1, const std::string & str2) {
+	void checkLengthScore(double expectedLengthScore, const std::string & str1, const std::string & str2) {
 		EXPECT_EQ(expectedLengthScore, similarity.getLengthScore(str1, str2));
 	}
-	void validAlphaCheck(double expectedAlphaScore, const std::string & str1, const std::string & str2) {
+	void checkAlphaScore(double expectedAlphaScore, const std::string & str1, const std::string & str2) {
 		EXPECT_EQ(expectedAlphaScore, similarity.getAlphaScore(str1, str2));
 	}
-	void validAlphaCheckThrowsException(const std::string & str1, const std::string & str2) {
+	void checkAlphaScoreNotEqualCase(double expectedAlphaScore, const std::string & str1, const std::string & str2) {
+		EXPECT_NE(expectedAlphaScore, similarity.getAlphaScore(str1, str2));
+	}
+	void checkTotalScore(double expectedScore, const std::string & str1, const std::string & str2) {
+		EXPECT_EQ(expectedScore, similarity.getScore(str1, str2));
+	}
+	void checkAlphaScoreThorwsException(const std::string & str1, const std::string & str2) {
 		EXPECT_THROW(similarity.getAlphaScore(str1, str2), std::invalid_argument);
 	}
 };
 
 TEST_F(SimilarityFixture, LengthSame) {
-	validLengthCheck(LENGTH_PERFECT_SCORE, "ABC", "GHI");
+	checkLengthScore(LENGTH_PERFECT_SCORE, "ABC", "GHI");
 }
 
 TEST_F(SimilarityFixture, LengthX2) {
-	validLengthCheck(ZERO_SCORE, "ABC", "GHIDEF");
+	checkLengthScore(ZERO_SCORE, "ABC", "GHIDEF");
 }
 
 TEST_F(SimilarityFixture, LengthX2Over) {
-	validLengthCheck(ZERO_SCORE, "ABC", "GHIDEFABC");
+	checkLengthScore(ZERO_SCORE, "ABC", "GHIDEFABC");
 }
 
 TEST_F(SimilarityFixture, LengthPartialScore1) {
-	validLengthCheck(36.0, "ABC", "DEFGH");
+	checkLengthScore(36.0, "ABC", "DEFGH");
 }
 
 TEST_F(SimilarityFixture, LengthPartialScore2) {
-	validLengthCheck(7.0*LENGTH_PERFECT_SCORE/9, "ABCDEFG", "ABCDEFGHI");
+	checkLengthScore(7.0*LENGTH_PERFECT_SCORE/9, "ABCDEFG", "ABCDEFGHI");
 }
 
 TEST_F(SimilarityFixture, AlphaSame1) {
-	validAlphaCheck(ALPHA_PERFECT_SCORE, "ABC", "ABC");
+	checkAlphaScore(ALPHA_PERFECT_SCORE, "ABC", "ABC");
 }
 
 TEST_F(SimilarityFixture, AlphaTotallyDifferent) {
-	validAlphaCheck(ZERO_SCORE, "ABC", "DEFGH");
+	checkAlphaScore(ZERO_SCORE, "ABC", "DEFGH");
 }
 
 TEST_F(SimilarityFixture, AlphaNoCapitalCase1) {
-	validAlphaCheckThrowsException("ABC", "aBC");
+	checkAlphaScoreThorwsException("ABC", "aBC");
 }
 
 TEST_F(SimilarityFixture, AlphaNoCapitalCase2) {
-	validAlphaCheckThrowsException("aBC", "ABC");
+	checkAlphaScoreThorwsException("aBC", "ABC");
 }
 
 TEST_F(SimilarityFixture, AlphaNoCapitalCase3) {
-	validAlphaCheckThrowsException("d12", "d12");
+	checkAlphaScoreThorwsException("d12", "d12");
 }
 
 TEST_F(SimilarityFixture, AlphaSame2) {
-	validAlphaCheck(ALPHA_PERFECT_SCORE, "ABCD", "ACDB");
+	checkAlphaScore(ALPHA_PERFECT_SCORE, "ABCD", "ACDB");
 }
 
 TEST_F(SimilarityFixture, AlphaSame3) {
-	validAlphaCheck(ALPHA_PERFECT_SCORE, "ABCD", "ACDBA");
+	checkAlphaScore(ALPHA_PERFECT_SCORE, "ABCD", "ACDBA");
 }
 
-TEST_F(SimilarityFixture, AlphaPartialScore) {
-	validAlphaCheck(4.0*ALPHA_PERFECT_SCORE/7.0, "ABCDEFG", "ACDBA");
+TEST_F(SimilarityFixture, AlphaPartialScoreForFloatingPointPrecision1) {
+	checkAlphaScore(4.0*ALPHA_PERFECT_SCORE/7.0, "ABCDEFGA", "ACDBA");
+}
+
+TEST_F(SimilarityFixture, AlphaPartialScoreForFloatingPointPrecision2) {
+	checkAlphaScoreNotEqualCase(4.0/7.0*ALPHA_PERFECT_SCORE, "ABCDEFGA", "ACDBA");
+}
+
+TEST_F(SimilarityFixture, LengthAndAlphaCase1) {
+	checkTotalScore(LENGTH_PERFECT_SCORE + ALPHA_PERFECT_SCORE, "ABC", "ABC");
+}
+
+TEST_F(SimilarityFixture, LengthAndAlphaCase2) {
+	checkTotalScore(3.0*LENGTH_PERFECT_SCORE/5.0+ ZERO_SCORE, "ABC", "DEFGH");
+}
+
+TEST_F(SimilarityFixture, LengthAndAlphaCase3) {
+	checkTotalScore(8.0*LENGTH_PERFECT_SCORE/10.0 + 7.0*ALPHA_PERFECT_SCORE/9.0, "ABCDAEFG", "ABCDEFGHIA");
 }
