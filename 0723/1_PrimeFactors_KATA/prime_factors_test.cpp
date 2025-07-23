@@ -4,7 +4,7 @@
 using std::vector;
 using namespace testing;
 
-class PrimeFixture : public Test{
+class PrimeFixture: public Test {
 public:
 	PrimeFactors prime_factor;
 	vector<int> expected;
@@ -25,3 +25,7 @@ TEST_F(PrimeFixture, Of3) {
 	EXPECT_EQ(expected, prime_factor.of(3));
 }
 
+TEST_F(PrimeFixture, Of4) {
+	expected = {2,2};
+	EXPECT_EQ(expected, prime_factor.of(4));
+}
