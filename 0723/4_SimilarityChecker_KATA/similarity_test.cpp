@@ -19,3 +19,7 @@ TEST_F(SimilarityFixture, LengthX2) {
 	validCheck(0, "ABC", "GHIDEF");
 }
 
+TEST_F(SimilarityFixture, LengthX2Over) {
+	validCheck(0, "ABC", "GHIDEFABC");
+}
+
