@@ -3,21 +3,22 @@
 #include <algorithm>
 #include <stdexcept>
 #include <cctype>
+#include <unordered_map>
 
 namespace {
-	constexpr double LENGTH_PERFECT_SCORE = 60.0;
-	constexpr double ALPHA_PERFECT_SCORE = 40.0;
-	constexpr double ZERO_SCORE = 0.0;
-	constexpr bool ALL_CAPITAL = true;
-	constexpr bool NOT_ALL_CAPITAL = false;
+	const double LENGTH_PERFECT_SCORE = 60.0;
+	const double ALPHA_PERFECT_SCORE = 40.0;
+	const double ZERO_SCORE = 0.0;
+	const bool ALL_CAPITAL = true;
+	const bool NOT_ALL_CAPITAL = false;
 }
 
 class Similarity {
 public:
 	double getLengthScore(const std::string & str1, const std::string & str2) {
 		if(str1.size() == str2.size()) return LENGTH_PERFECT_SCORE;
-		int len1 = str1.size();
-		int len2 = str2.size();
+		int len1 = static_cast<int>(str1.size());
+		int len2 = static_cast<int>(str2.size());
 		int bigLen = std::max(len1,len2);
 		int smallLen = std::min(len1,len2);
 		if(bigLen >= 2*smallLen) return ZERO_SCORE;
@@ -42,13 +43,42 @@ public:
 		return true;
 	}
 
-	double getAplhaScore(const std::string & str1, const std::string & str2) {
+	double getAlphaScore(const std::string & str1, const std::string & str2) {
 		if(NOT_ALL_CAPITAL == isAllCapital(str1) || NOT_ALL_CAPITAL == isAllCapital(str2)) {
 			throw std::invalid_argument("Input must be all capital letters.");
 		}
 		if(str1 == str2) return ALPHA_PERFECT_SCORE; 
 		else if(isTotallyDifferent(str1, str2)) return ZERO_SCORE;
 
-		return ZERO_SCORE;
+		return getAlphaPartialScore(str1, str2);
 	}
+
+	int getSameCnt(const std::string & str1, const std::string & str2) {
+		charCount1.clear();
+		charCount2.clear();
+		for(char ch : str1) charCount1[ch]++;
+
+		for(char ch : str2) {
+			if(charCount1.count(ch)>0) {
+				charCount2[ch]++;
+			}
+		}
+		return charCount2.size();
+	}
+
+	int getTotalCnt(const std::string & str1, const std::string &str2) {
+		charCount1.clear();
+		for(char ch : str1) charCount1[ch]++;
+		for(char ch : str2) charCount1[ch]++;
+		return static_cast<int>(charCount1.size());
+	}
+	
+	double getAlphaPartialScore(const std::string & str1, const std::string & str2) {
+		int sameCnt = getSameCnt(str1, str2);
+		int totalCnt = getTotalCnt(str1, str2);
+
+		return static_cast<double>(sameCnt) * ALPHA_PERFECT_SCORE / totalCnt;
+	}
+private:
+		std::unordered_map<char, int> charCount1, charCount2;
 };
