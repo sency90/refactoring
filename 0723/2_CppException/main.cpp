@@ -3,15 +3,24 @@
 
 using std::cout;
 
+class NotAllowedSix : public std::exception{
+public:
+	NotAllowedSix(const char * msg) : exception{msg} {}
+};
+
 int run(int n) {
 	if(n==1) {
-		throw std::invalid_argument("아 안돼~");
+		throw NotAllowedSix("run(): NotAllowedSix Exception Occured!\n");
 	}
 }
 
 int main() {
 	try {
 		cout << run(1);
+	}
+	catch(const NotAllowedSix & e) {
+		cout << "try-catch(): NotAllowedSix Exception Occured!\n";
+		cout << e.what() << "\n";
 	}
 	catch(const std::invalid_argument & e) {
 		cout << "std::invalid_argument 예외 발생\n";
