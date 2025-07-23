@@ -1,16 +1,21 @@
 #include "gmock/gmock.h"
 #include "baseball.cpp"
+using namespace testing;
 
-TEST(TS, TC1) {
-	EXPECT_EQ(1, 1);
-}
-
-TEST(BaseballGame, ThrowExceptionWhenInputLengthIsUnmached) {
+class BaseballFixture: public Test {
+public:
 	Baseball game;
-	EXPECT_THROW(game.guess(string("12")), length_error);
-}
+	void assertIllegalArgument(const string& guessNumber) {
+		try {
+			game.guess(string(guessNumber));
+			FAIL();
+		} catch(exception ex) {
+			//PASS
+		}
+	}
+};
 
-TEST(BaseballGame, ThrowExceptionWhenInvalidChar) {
-	Baseball game;
-	EXPECT_THROW(game.guess(string("12s")), invalid_argument);
+TEST_F(BaseballFixture, ThrowExceptionWhenInvalidCase) {
+	assertIllegalArgument("12");
+	assertIllegalArgument("12s");
 }
