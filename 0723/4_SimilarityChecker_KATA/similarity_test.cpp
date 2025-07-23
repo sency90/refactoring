@@ -1,5 +1,6 @@
 #include "similarity.cpp"
 #include "gmock/gmock.h"
+#include <stdexcept>
 
 using namespace testing;
 
@@ -9,8 +10,11 @@ public:
 	void validLengthCheck(double expectedLengthScore, const std::string & str1, const std::string & str2) {
 		EXPECT_EQ(expectedLengthScore, similarity.getLengthScore(str1, str2));
 	}
-	void validAplhaCheck(double expectedAlphaScore, const std::string & str1, const std::string & str2) {
+	void validAlphaCheck(double expectedAlphaScore, const std::string & str1, const std::string & str2) {
 		EXPECT_EQ(expectedAlphaScore, similarity.getAplhaScore(str1, str2));
+	}
+	void validAlphaCheckThrowsException(const std::string & str1, const std::string & str2) {
+		EXPECT_THROW(similarity.getAplhaScore(str1, str2), std::invalid_argument);
 	}
 };
 
@@ -34,11 +38,22 @@ TEST_F(SimilarityFixture, LengthPartScore2) {
 	validLengthCheck(7.0*60/9, "ABCDEFG", "ABCDEFGHI");
 }
 
-
 TEST_F(SimilarityFixture, AlphaSame) {
-	validAplhaCheck(40.0, "ABC", "ABC");
+	validAlphaCheck(40.0, "ABC", "ABC");
 }
 
 TEST_F(SimilarityFixture, AlphaTotallyDifferent) {
-	validAplhaCheck(0.0, "ABC", "DEFGH");
+	validAlphaCheck(0.0, "ABC", "DEFGH");
+}
+
+TEST_F(SimilarityFixture, AlphaNoCapitalCase1) {
+	validAlphaCheckThrowsException("ABC", "aBC");
+}
+
+TEST_F(SimilarityFixture, AlphaNoCapitalCase2) {
+	validAlphaCheckThrowsException("aBC", "ABC");
+}
+
+TEST_F(SimilarityFixture, AlphaNoCapitalCase3) {
+	validAlphaCheckThrowsException("d12", "d12");
 }
