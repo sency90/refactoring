@@ -24,7 +24,12 @@ TEST_F(BaseballFixture, ThrowExceptionWhenInvalidCase) {
 TEST_F(BaseballFixture, ReturnSolvedResultIfMatchedNumber) {
 	GuessResult result = game.guess("123");
 
-	EXPECT_TRUE(result.solved);
-	EXPECT_EQ(3, result.strikes);
-	EXPECT_EQ(0, result.balls);
+	bool isEqual = (result == GuessResult{true, 3, 0});
+	EXPECT_TRUE(isEqual);
+}
+
+TEST_F(BaseballFixture, S2B0) {
+	GuessResult result = game.guess("124");
+	bool isEqual = (result == GuessResult{false, 2, 0});
+	EXPECT_TRUE(isEqual);
 }

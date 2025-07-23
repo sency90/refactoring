@@ -1,25 +1,69 @@
 #include <stdexcept>
 #include <string>
 #include <cctype>
+#include <iostream>
 using namespace std;
 
 struct GuessResult {
-	bool solved;
+public:
+	bool isSolved;
 	int strikes;
 	int balls;
+
+public:
+	GuessResult():isSolved(false), strikes(0), balls(0) {}
+	GuessResult(bool isSolved, int strikes, int balls):isSolved(isSolved), strikes(strikes), balls(balls) {}
+	bool operator==(const GuessResult& rhs) const {
+		return isSolved == rhs.isSolved && strikes == rhs.strikes && balls == rhs.balls;
+	}
+
+	bool getIsSolved() const {
+		return isSolved;
+	}
+	int getStrikes() const {
+		return strikes;
+	}
+	int getBalls() const {
+		return balls;
+	}
+
+	void countStrike() {
+		strikes++;
+		if(strikes==3) {
+			isSolved = true;
+		}
+	}
+	void countBall() {
+		balls++;
+	}
 };
 
 
 class Baseball {
 public:
-	explicit Baseball(const string& question) : question(question) { }
+	explicit Baseball(const string& question): question(question) {}
 
 	GuessResult guess(const string& guessNumber) {
 		assertIllegalArgument(guessNumber);
 		if(guessNumber == question) {
 			return {true, 3, 0};
 		}
-		return {false, 0, 0};
+		GuessResult guessResult;
+		for(int i=0; i<question.size(); i++) {
+			for(int j=0; j<guessNumber.size(); j++) {
+				if(question[i] == guessNumber[j]) {
+					if(i == j) {
+						guessResult.countStrike();
+						break;
+					} else {
+						guessResult.countBall();
+						break;
+					}
+				}
+			}
+		}
+		
+		return guessResult;
 	}
 	void assertIllegalArgument(const std::string& guessNumber) {
 		if(guessNumber.length() != 3) {
