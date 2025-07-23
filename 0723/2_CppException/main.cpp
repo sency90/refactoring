@@ -1,18 +1,28 @@
 #include <iostream>
 #include <stdexcept>
 
+using std::cout;
+
 int run(int n) {
 	if(n==1) {
-		throw std::exception("¾Æ ¾ÈµÅ~");
+		throw std::invalid_argument("¾Æ ¾ÈµÅ~");
 	}
 }
 
 int main() {
 	try {
-		std::cout << run(1);
+		cout << run(1);
+	}
+	catch(const std::invalid_argument & e) {
+		cout << "std::invalid_argument ¿¹¿Ü ¹ß»ý\n";
+		cout << e.what() << "\n";
+	}
+	catch(const std::exception & e) {
+		cout << "std::exception\n";
+		cout << e.what() << "\n";
 	}
 	catch(...) {
-		std::cout << "...¿¡ µµÂø\n";
+		cout << "etc\n";
 	}
 	return 0;
 }
