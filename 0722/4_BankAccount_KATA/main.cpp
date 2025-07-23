@@ -30,6 +30,37 @@ TEST_F(AccountFixture, Withdraw) {
 	balanceCheck(9400); 
 }
 
+
+TEST_F(AccountFixture, applyCompoundInterest5Percent) {
+	account.applyCompoundInterest(5);
+	int actual = account.getBalance();
+	balanceCheck(10500);
+}
+
+TEST_F(AccountFixture, SetRate) {
+	const double rate = 10.1;
+	account.setRate(rate);
+	int actual = account.getBalance();
+	balanceCheck(10000);
+	double out_rate = account.getRate();
+	EXPECT_EQ(rate, out_rate);
+}
+
+TEST_F(AccountFixture, ApplyRate) {
+	const double rate = 10.1;
+	account.setRate(rate);
+	account.applyRate();
+	balanceCheck(11010);
+}
+
+TEST_F(AccountFixture, ExpectNYearRate) {
+	const int year = 10;
+	const double rate = 10.1;
+	balanceCheck(10000);
+	double expected_balance = account.expectBalanceWithNYearRate(year, rate);
+	EXPECT_EQ(expected_balance, 26167);
+}
+
 int main() {
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
