@@ -34,3 +34,10 @@ TEST_F(BaseballFixture, S2B0) {
 	bool isEqual = (result == GuessResult{false, 2, 0});
 	EXPECT_TRUE(isEqual);
 }
+
+TEST_F(BaseballFixture, S1B2) {
+	GuessResult result = game.guess("132");
+
+	bool isEqual = (result == GuessResult{false, 1, 2});
+	EXPECT_TRUE(isEqual);
+}
