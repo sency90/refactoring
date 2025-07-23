@@ -4,6 +4,7 @@
 
 namespace {
 	constexpr double LENGTH_PERFECT_SCORE = 60.0;
+	constexpr double ALPHA_PERFECT_SCORE = 40.0;
 	constexpr double ZERO_SCORE = 0.0;
 }
 
@@ -18,5 +19,10 @@ public:
 		if(bigLen >= 2*smallLen) return ZERO_SCORE;
 
 		return static_cast<double>(smallLen)*LENGTH_PERFECT_SCORE/bigLen;
+	}
+
+	double getAplhaScore(const std::string & str1, const std::string & str2) {
+		if(str1 == str2) return ALPHA_PERFECT_SCORE; 
+		return ZERO_SCORE;
 	}
 };
