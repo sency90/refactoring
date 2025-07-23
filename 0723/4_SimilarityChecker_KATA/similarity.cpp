@@ -41,7 +41,7 @@ public:
 
 private:
 	double getLengthPartialScore(int smallLen, int bigLen) {
-		return static_cast<double>(smallLen)*LENGTH_PERFECT_SCORE/bigLen;
+		return static_cast<double>(2*smallLen-bigLen)*LENGTH_PERFECT_SCORE/smallLen;
 	}
 
 	bool isAllUpper(const std::string& str) {

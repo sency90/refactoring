@@ -43,11 +43,11 @@ TEST_F(SimilarityFixture, LengthX2Over) {
 }
 
 TEST_F(SimilarityFixture, LengthPartialScore1) {
-	checkLengthScore(36.0, "ABC", "DEFGH");
+	checkLengthScore(20.0, "ABC", "DEFGH");
 }
 
 TEST_F(SimilarityFixture, LengthPartialScore2) {
-	checkLengthScore(7.0*LENGTH_PERFECT_SCORE/9, "ABCDEFG", "ABCDEFGHI");
+	checkLengthScore((2*7.0-9)*LENGTH_PERFECT_SCORE/7, "ABCDEFG", "ABCDEFGHI");
 }
 
 TEST_F(SimilarityFixture, AlphaSame1) {
@@ -91,9 +91,9 @@ TEST_F(SimilarityFixture, LengthAndAlphaCase1) {
 }
 
 TEST_F(SimilarityFixture, LengthAndAlphaCase2) {
-	checkTotalScore(3.0*LENGTH_PERFECT_SCORE/5.0+ ZERO_SCORE, "ABC", "DEFGH");
+	checkTotalScore((2*3.0-5)*LENGTH_PERFECT_SCORE/3+ ZERO_SCORE, "ABC", "DEFGH");
 }
 
 TEST_F(SimilarityFixture, LengthAndAlphaCase3) {
-	checkTotalScore(8.0*LENGTH_PERFECT_SCORE/10.0 + 7.0*ALPHA_PERFECT_SCORE/9.0, "ABCDAEFG", "ABCDEFGHIA");
+	checkTotalScore((2*8.0-10)*LENGTH_PERFECT_SCORE/8 + 7.0*ALPHA_PERFECT_SCORE/9.0, "ABCDAEFG", "ABCDEFGHIA");
 }
