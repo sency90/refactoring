@@ -27,14 +27,19 @@ public:
 
 	bool isAllCapital(const std::string & str) {
 		for(char ch: str) {
-			if(false == isalpha(ch)) {
-				return NOT_ALL_CAPITAL;
-			}
-			if(false == isupper(ch)) {
-				return NOT_ALL_CAPITAL;
-			}
+			if(false == isalpha(ch)) return NOT_ALL_CAPITAL;
+			if(false == isupper(ch)) return NOT_ALL_CAPITAL;
 		}
 		return ALL_CAPITAL;
+	}
+
+	bool isTotallyDifferent(const std::string & str1, const std::string & str2) {
+		for(char ch1: str1) {
+			for(char ch2: str2) {
+				if(ch1 == ch2) return false;
+			}
+		}
+		return true;
 	}
 
 	double getAplhaScore(const std::string & str1, const std::string & str2) {
@@ -42,6 +47,8 @@ public:
 			throw std::invalid_argument("Input must be all capital letters.");
 		}
 		if(str1 == str2) return ALPHA_PERFECT_SCORE; 
+		else if(isTotallyDifferent(str1, str2)) return ZERO_SCORE;
+
 		return ZERO_SCORE;
 	}
 };
