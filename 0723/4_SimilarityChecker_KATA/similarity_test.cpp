@@ -15,3 +15,7 @@ TEST_F(SimilarityFixture, LengthSame) {
 	validCheck(60, "ABC", "GHI");
 }
 
+TEST_F(SimilarityFixture, LengthX2) {
+	validCheck(0, "ABC", "GHIDEF");
+}
+
