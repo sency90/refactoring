@@ -34,6 +34,7 @@ public:
 	const long MEMORY_ADDRESS = 0xBU;
 	const int NO_DATA = 0xFF;
 	const int INPUT_DATA = 10;
+	const int ANY_DATA_EXCEPT_NO_DATA = ~NO_DATA;
 
 };
 
@@ -59,6 +60,42 @@ TEST_F(DeviceDriverFixture, ReturnsSameValueAfterFiveReads) {
 	int outputData = driver->read(MEMORY_ADDRESS);
 	EXPECT_EQ(outputData, INPUT_DATA);
 #endif
+}
+
+TEST_F(DeviceDriverFixture, ThrowsExceptionWhenFirstTwoReadsDiffer) {
+	expectWriteAfterEmptyCheck(MEMORY_ADDRESS, INPUT_DATA);
+
+#if 1 //read
+	EXPECT_CALL(mock, read(MEMORY_ADDRESS))
+		.WillOnce(Return(INPUT_DATA-1))
+		.WillOnce(Return(INPUT_DATA));
+
+	EXPECT_THROW({driver->read(MEMORY_ADDRESS);}, ReadFailException);
+#endif
+
+}
+TEST_F(DeviceDriverFixture, ThrowsExceptionWhenLastReadDiffers) {
+	expectWriteAfterEmptyCheck(MEMORY_ADDRESS, INPUT_DATA);
+
+#if 1 //read
+	EXPECT_CALL(mock, read(MEMORY_ADDRESS))
+		.WillOnce(Return(INPUT_DATA))
+		.WillOnce(Return(INPUT_DATA))
+		.WillOnce(Return(INPUT_DATA))
+		.WillOnce(Return(INPUT_DATA))
+		.WillOnce(Return(INPUT_DATA-1));
+
+	EXPECT_THROW({driver->read(MEMORY_ADDRESS);}, ReadFailException);
+#endif
+}
+
+TEST_F(DeviceDriverFixture, ThrowsExceptionWhenWrite) {
+	expectWriteAfterEmptyCheck(MEMORY_ADDRESS, INPUT_DATA);
+
+	EXPECT_CALL(mock, read(MEMORY_ADDRESS))
+		.WillOnce(Return(ANY_DATA_EXCEPT_NO_DATA));
+
+	EXPECT_THROW({driver->write(MEMORY_ADDRESS, INPUT_DATA);}, WriteFailException);
 }
 
 int main() {
