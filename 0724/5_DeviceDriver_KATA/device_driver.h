@@ -1,5 +1,7 @@
 #pragma once
 #include "flash_memory_device.h"
+#include "read_fail_exception.h"
+#include "write_fail_exception.h"
 
 class DeviceDriver
 {

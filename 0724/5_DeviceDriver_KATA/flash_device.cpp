@@ -12,9 +12,10 @@ public:
 		if(memory.count(address)>0) {
 			return memory.at(address);
 		}
-		return 0;
+		return 0xFF;
 	}
 	void write(long address, unsigned char data) override {
+		memory[address] = data;
 	}
 private:
 	map<ADDR, DATA> memory;

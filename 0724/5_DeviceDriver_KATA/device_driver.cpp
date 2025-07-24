@@ -5,14 +5,28 @@ DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware)
 
 int DeviceDriver::read(long address) {
 	// TODO: implement this method properly
-	int ret = 0;
+	int readDataFirst = (int)(m_hardware->read(address));
+
+	//read 4 times more
 	for(int i=0; i<4; i++) {
-		ret = (int)(m_hardware->read(address));
+		int readDataNow = (int)(m_hardware->read(address));
+		if(readDataNow == readDataFirst) continue;
+
+		throw ReadFailException();
 	}
-	return (int)(m_hardware->read(address));
+
+	const int & readDataFinal = readDataFirst;
+	return readDataFinal;
 }
 
 void DeviceDriver::write(long address, int data) {
 	// TODO: implement this method
-	m_hardware->write(address, (unsigned char)data);
+	int readData = m_hardware->read(address);
+
+	if(readData == 0xFF) {
+		m_hardware->write(address, (unsigned char)data);
+		return;
+	}
+
+	throw WriteFailException();
 }
