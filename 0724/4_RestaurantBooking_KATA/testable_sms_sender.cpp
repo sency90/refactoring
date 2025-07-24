@@ -9,7 +9,7 @@ public:
 		cout << "테스트용 SmsSender class의 send메서드 실행됨\n";
 		sendMethodIsCalled = true;
 	}
-	bool isSendMethodIsCalled() {
+	bool isSendMethodIsCalled() const {
 		return sendMethodIsCalled;
 	}
 
