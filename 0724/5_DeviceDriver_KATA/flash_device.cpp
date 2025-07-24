@@ -9,6 +9,9 @@ class FlashDevice : public FlashMemoryDevice {
 public:
 	// FlashMemoryDevice을(를) 통해 상속됨
 	unsigned char read(long address) override {
+		if(memory.count(address)>0) {
+			return memory.at(address);
+		}
 		return 0;
 	}
 	void write(long address, unsigned char data) override {
