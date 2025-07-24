@@ -12,6 +12,7 @@ protected:
 		ON_THE_HOUR = getTime(2021, 3, 26, 9, 0);
 
 		bookingScheduler.setSmsSender(&testableSmsSender);
+		bookingScheduler.setMailSender(&testableMailSender);
 	}
 public:
 	tm getTime(int year, int mon, int day, int hour, int min) {
@@ -29,11 +30,13 @@ public:
 	tm NOT_ON_THE_HOUR;
 	tm ON_THE_HOUR;
 	Customer CUSTOMER{"Fake name", "010-1234-5678"};
+	Customer CUSTOMER_WITH_MAIL{"Fake Name", "010-1234-5678", "test@test.com"};
 	const int UNDER_CAPACITY = 1;
 	const int CAPACITY_PER_HOUR = 3;
 
 	BookingScheduler bookingScheduler{CAPACITY_PER_HOUR};
 	TestableSmsSender testableSmsSender;
+	TestableMailSender testableMailSender;
 };
 
 //STEP1: 테스트 케이스 작성(with Mocking)
@@ -101,9 +104,7 @@ TEST_F(BookingItem, t5) {//예약완료시_SMS는_무조건_발송) {
 
 TEST_F(BookingItem, t6) {//이메일이_없는_경우에는_이메일_미발송) {
 	//arrange
-	TestableMailSender testableMailSender;
 	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
-	bookingScheduler.setMailSender(&testableMailSender);
 
 	//act
 	bookingScheduler.addSchedule(schedule);
@@ -114,10 +115,7 @@ TEST_F(BookingItem, t6) {//이메일이_없는_경우에는_이메일_미발송) {
 
 TEST_F(BookingItem, t7) {//이메일이_있는_경우에는_이메일_발송) {
 	//arrange
-	Customer customerWithMail{"Fake Name", "010-1234-5678", "test@test.com"};
-	TestableMailSender testableMailSender;
-	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, customerWithMail};
-	bookingScheduler.setMailSender(&testableMailSender);
+	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL};
 
 	//act
 	bookingScheduler.addSchedule(schedule);
