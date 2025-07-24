@@ -6,6 +6,11 @@
 
 using namespace testing;
 
+class MockCustomer: public Customer {
+public:
+	MOCK_METHOD(string, getEmail, (), (override));
+};
+
 class BookingItem: public Test {
 protected:
 	void SetUp() override {
@@ -16,6 +21,12 @@ protected:
 
 		bookingScheduler.setSmsSender(&testableSmsSender);
 		bookingScheduler.setMailSender(&testableMailSender);
+
+		EXPECT_CALL(CUSTOMER, getEmail)
+			.WillRepeatedly(testing::Return(""));
+
+		EXPECT_CALL(CUSTOMER_WITH_MAIL, getEmail)
+			.WillRepeatedly(testing::Return("test@test.com"));
 	}
 public:
 	tm getTime(int year, int mon, int day, int hour, int min) {
@@ -34,8 +45,10 @@ public:
 	tm ON_THE_HOUR;
 	tm SUNDAY_TIME;
 	tm MONDAY_TIME;
-	Customer CUSTOMER{"Fake name", "010-1234-5678"};
-	Customer CUSTOMER_WITH_MAIL{"Fake Name", "010-1234-5678", "test@test.com"};
+	MockCustomer CUSTOMER;
+	MockCustomer CUSTOMER_WITH_MAIL;
+	//Customer CUSTOMER{"Fake name", "010-1234-5678"};
+	//Customer CUSTOMER_WITH_MAIL{"Fake Name", "010-1234-5678", "test@test.com"};
 	const int UNDER_CAPACITY = 1;
 	const int CAPACITY_PER_HOUR = 3;
 
@@ -50,7 +63,7 @@ TEST_F(BookingItem, t1) {//예약은_정시로만_가능하다_정시가_아닌경우_예약불가) {
 	Schedule* schedule = new Schedule{NOT_ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
 	//act
-	EXPECT_THROW({bookingScheduler.addSchedule(schedule);}, std::runtime_error);
+	EXPECT_THROW({bookingScheduler.addSchedule(schedule); }, std::runtime_error);
 }
 
 TEST_F(BookingItem, t2) {//예약은_정시로만_가능하다_정시인_경우_예약가능) {
