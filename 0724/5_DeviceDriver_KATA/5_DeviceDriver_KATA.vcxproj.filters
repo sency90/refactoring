@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="테스트 파일">
+      <UniqueIdentifier>{0bcf13d0-91e6-4e52-b017-138a99d37c18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="device_driver.h">
@@ -23,10 +26,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="device_driver.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="device_driver.cpp">
+    <ClCompile Include="main.cpp">
+      <Filter>테스트 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="flash_device.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
