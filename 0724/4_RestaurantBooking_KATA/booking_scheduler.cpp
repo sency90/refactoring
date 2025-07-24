@@ -18,7 +18,7 @@ public:
     }
 
     void addSchedule(Schedule* schedule) {
-
+        //**예약은 정각에만 가능하다 -> Mocking대상**
         // 정각에 예약하지 않을 경우 RuntimeException 발생
         if (schedule->getDateTime().tm_min != 0) {
             throw std::runtime_error("Booking should be on the hour.");
@@ -45,10 +45,11 @@ public:
 
         schedules.push_back(schedule);
 
-        // 고객에게 SMS 발송
+        // 고객에게 SMS 발송 -> **이거 유료임 그래서 Mocking대상!!**
         smsSender->send(schedule);
         // 고객이 E-Mail을 가지고 있을 경우 E-Mail 발송
         if (schedule->getCustomer().getEmail() != "") {
+            //**이것도 UnitTest한다고 고객에게 직접 보낼 순 없으니 Mocking대상임**
             mailSender->sendMail(schedule);
         }
     }
