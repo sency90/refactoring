@@ -61,6 +61,24 @@ TEST(TS, TC5) {
 	cout << mockCal.getSum(1,2) << "\n";
 }
 
+TEST(TS, TC6) {
+	MockCal mockCal;
+
+	EXPECT_CALL(mockCal, getSum(1,2)).
+		WillRepeatedly(Return(100));
+	
+	EXPECT_CALL(mockCal, getSum(5,6))
+		.WillOnce(Return(1))
+		.WillOnce(Return(2))
+		.WillRepeatedly(Return(50));
+
+	cout << mockCal.getSum(1,2) << "\n";
+	cout << mockCal.getSum(5,6) << "\n";
+	cout << mockCal.getSum(5,6) << "\n";
+	cout << mockCal.getSum(5,6) << "\n";
+	cout << mockCal.getSum(5,6) << "\n";
+}
+
 int main() {
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
