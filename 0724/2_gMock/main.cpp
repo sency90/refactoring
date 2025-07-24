@@ -8,6 +8,7 @@ using namespace testing;
 class MockCal : public Cal{
 public:
 	MOCK_METHOD(int, getSum, (int a, int b), ());
+	MOCK_METHOD(int, getValue, (), ());
 };
 
 TEST(TS, TC1) {
@@ -64,8 +65,8 @@ TEST(TS, TC5) {
 TEST(TS, TC6) {
 	MockCal mockCal;
 
-	EXPECT_CALL(mockCal, getSum(1,2)).
-		WillRepeatedly(Return(100));
+	EXPECT_CALL(mockCal, getSum(1,2))
+		.WillRepeatedly(Return(100));
 	
 	EXPECT_CALL(mockCal, getSum(5,6))
 		.WillOnce(Return(1))
@@ -77,6 +78,21 @@ TEST(TS, TC6) {
 	cout << mockCal.getSum(5,6) << "\n";
 	cout << mockCal.getSum(5,6) << "\n";
 	cout << mockCal.getSum(5,6) << "\n";
+}
+
+TEST(CHALLENGE, TC7) {
+	MockCal mockCal;
+
+	cout << "**** TS_TC7 ****\n";
+	EXPECT_CALL(mockCal, getValue())
+		.Times(2).WillRepeatedly(Return(10000));
+
+	//이 Method Chaining 방식은 불가능하다.
+	//EXPECT_CALL(mockCal, getValue())
+	//	.WillRepeatedly(Return(10000)).Times(2);
+
+	EXPECT_THAT(mockCal.getValue(), Eq(10000));
+	EXPECT_THAT(mockCal.getValue(), Eq(10000));
 }
 
 int main() {
