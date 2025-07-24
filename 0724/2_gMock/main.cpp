@@ -43,6 +43,11 @@ TEST(TS, TC3) {
 	int t2 = mockCal.getSum(1,10);
 }
 
+TEST(TS, TC4) {
+	MockCal mockCal;
+	EXPECT_EQ(mockCal.getSum(1,2), 0);
+}
+
 int main() {
 	::testing::InitGoogleMock();
 	return RUN_ALL_TESTS();
