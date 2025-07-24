@@ -1,6 +1,8 @@
 #include "gmock/gmock.h"
 #include "cal.cpp"
+#include <iostream>
 
+using std::cout;
 using namespace testing;
 
 class MockCal : public Cal{
@@ -45,7 +47,18 @@ TEST(TS, TC3) {
 
 TEST(TS, TC4) {
 	MockCal mockCal;
+	//mockCal 객체는 가짜다!
+	//return값은 그냥 0이다. getSum()을 진짜로 수행하는게 아니다.
 	EXPECT_EQ(mockCal.getSum(1,2), 0);
+}
+
+TEST(TS, TC5) {
+	MockCal mockCal;
+
+	//Stub: A를 넣으면 무조건 B가 리턴되어야 함을 Setting
+	EXPECT_CALL(mockCal, getSum(1,2)).WillRepeatedly(Return(100));
+
+	cout << mockCal.getSum(1,2) << "\n";
 }
 
 int main() {
