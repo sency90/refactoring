@@ -3,11 +3,11 @@
 
 using namespace testing;
 
-class BookingItem: public Test{
+class BookingItem: public Test {
 protected:
 	void SetUp() override {
-		NOT_ON_THE_HOUR = getTime(2021,3,26,9,5);
-		ON_THE_HOUR = getTime(2021,3,26,9,0);
+		NOT_ON_THE_HOUR = getTime(2021, 3, 26, 9, 5);
+		ON_THE_HOUR = getTime(2021, 3, 26, 9, 0);
 	}
 public:
 	tm getTime(int year, int mon, int day, int hour, int min) {
@@ -28,15 +28,15 @@ public:
 //STEP1: 테스트 케이스 작성(with Mocking)
 TEST_F(BookingItem, t1) {//예약은_정시에만_가능하다_정시가_아닌경우_예약불가) {
 	//arrange
-	Schedule* schedule = new Schedule{ NOT_ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER };
+	Schedule* schedule = new Schedule{NOT_ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
 	//act
-	EXPECT_THROW({bookingScheduler.addSchedule(schedule);}, std::runtime_error);
+	EXPECT_THROW({bookingScheduler.addSchedule(schedule); }, std::runtime_error);
 }
 
 TEST_F(BookingItem, t2) {//예약은_정시에만_가능하다_정시인_경우_예약가능) {
 	//arrange
-	Schedule* schedule = new Schedule{ ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER };
+	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
 	//act
 	bookingScheduler.addSchedule(schedule);
@@ -46,6 +46,19 @@ TEST_F(BookingItem, t2) {//예약은_정시에만_가능하다_정시인_경우_예약가능) {
 }
 
 TEST_F(BookingItem, t3) {//시간대별_인원제한이_있다_같은_시간대에_Capacity_초과할_경우_예외발생) {
+	//arrange
+	Schedule* schedule = new Schedule{ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER};
+	bookingScheduler.addSchedule(schedule);
+
+	//act
+	try {
+		Schedule* newSchedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
+		bookingScheduler.addSchedule(newSchedule);
+		FAIL();
+	}
+	catch(std::runtime_error & ex) {
+		EXPECT_EQ(string{ex.what()}, string{"Number of people is over restaurant capacity per hour"});
+	}
 
 }
 
