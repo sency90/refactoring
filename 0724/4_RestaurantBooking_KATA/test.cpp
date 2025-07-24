@@ -2,6 +2,8 @@
 #include "booking_scheduler.cpp"
 #include "testable_sms_sender.cpp"
 #include "testable_mail_sender.cpp"
+#include "sunday_booking_scheduler.cpp"
+#include "monday_booking_scheduler.cpp"
 
 using namespace testing;
 
@@ -45,7 +47,7 @@ TEST_F(BookingItem, t1) {//¿¹¾àÀº_Á¤½Ã·Î¸¸_°¡´ÉÇÏ´Ù_Á¤½Ã°¡_¾Æ´Ñ°æ¿ì_¿¹¾àºÒ°¡) {
 	Schedule* schedule = new Schedule{NOT_ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
 	//act
-	EXPECT_THROW({bookingScheduler.addSchedule(schedule); }, std::runtime_error);
+	EXPECT_THROW({bookingScheduler.addSchedule(schedule);}, std::runtime_error);
 }
 
 TEST_F(BookingItem, t2) {//¿¹¾àÀº_Á¤½Ã·Î¸¸_°¡´ÉÇÏ´Ù_Á¤½ÃÀÎ_°æ¿ì_¿¹¾à°¡´É) {
@@ -69,8 +71,7 @@ TEST_F(BookingItem, t3) {//½Ã°£´ëº°_ÀÎ¿øÁ¦ÇÑÀÌ_ÀÖ´Ù_°°Àº_½Ã°£´ë¿¡_Capacity_ÃÊ°úÇ
 		Schedule* newSchedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 		bookingScheduler.addSchedule(newSchedule);
 		FAIL();
-	}
-	catch(std::runtime_error & ex) {
+	} catch(std::runtime_error& ex) {
 		//assert
 		EXPECT_EQ(string{ex.what()}, string{"Number of people is over restaurant capacity per hour"});
 	}
@@ -126,10 +127,30 @@ TEST_F(BookingItem, t7) {//ÀÌ¸ÞÀÏÀÌ_ÀÖ´Â_°æ¿ì¿¡´Â_ÀÌ¸ÞÀÏ_¹ß¼Û) {
 
 
 TEST_F(BookingItem, t8) {//ÇöÀç³¯Â¥°¡_ÀÏ¿äÀÏÀÎ_°æ¿ì_¿¹¾àºÒ°¡_¿¹¿ÜÃ³¸®) {
+	//arrange
+	BookingScheduler* bookingScheduler = new SundayBookingScheduler{CAPACITY_PER_HOUR};
 
+	try {
+		//act
+		Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL};
+		bookingScheduler->addSchedule(schedule);
+		FAIL();
+	} catch(std::runtime_error& ex) {
+		//assert
+		EXPECT_EQ(string{ex.what()}, string{"Booking system is not available on Sunday."});
+	}
 }
 
 TEST_F(BookingItem, t9) {//ÇöÀç³¯Â¥°¡_ÀÏ¿äÀÏÀÌ_¾Æ´Ñ°æ¿ì_¿¹¾à°¡´É) {
+	//arrange
+	BookingScheduler* bookingScheduler = new MondayBookingScheduler{CAPACITY_PER_HOUR};
+
+	//act
+	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL};
+	bookingScheduler->addSchedule(schedule);
+
+	//assert
+	EXPECT_EQ(true, bookingScheduler->hasSchedule(schedule));
 
 }
 
