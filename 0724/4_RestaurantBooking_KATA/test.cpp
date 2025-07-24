@@ -53,8 +53,8 @@ public:
 	const int CAPACITY_PER_HOUR = 3;
 
 	BookingScheduler bookingScheduler{CAPACITY_PER_HOUR};
-	TestableSmsSender testableSmsSender;
-	TestableMailSender testableMailSender;
+	NiceMock<TestableSmsSender> testableSmsSender;
+	NiceMock<TestableMailSender> testableMailSender;
 };
 
 //STEP1: 테스트 케이스 작성(with Mocking)
@@ -112,22 +112,18 @@ TEST_F(BookingItem, t5) {//예약완료시_SMS는_무조건_발송) {
 	//arrange
 	Schedule* schedule = new Schedule{ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER};
 
-	//act
+	//act, assert
+	EXPECT_CALL(testableSmsSender, send(schedule)).Times(1);
 	bookingScheduler.addSchedule(schedule);
-
-	//assert
-	EXPECT_EQ(true, testableSmsSender.isSendMethodIsCalled());
 }
 
 TEST_F(BookingItem, t6) {//이메일이_없는_경우에는_이메일_미발송) {
 	//arrange
 	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
-	//act
+	//act, assert
+	EXPECT_CALL(testableMailSender, sendMail(schedule)).Times(0);
 	bookingScheduler.addSchedule(schedule);
-
-	//assert
-	EXPECT_EQ(0, testableMailSender.getCountSendMailMethodIsCalled());
 }
 
 TEST_F(BookingItem, t7) {//이메일이_있는_경우에는_이메일_발송) {
@@ -135,10 +131,8 @@ TEST_F(BookingItem, t7) {//이메일이_있는_경우에는_이메일_발송) {
 	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER_WITH_MAIL};
 
 	//act
+	EXPECT_CALL(testableMailSender, sendMail(schedule)).Times(1);
 	bookingScheduler.addSchedule(schedule);
-
-	//assert
-	EXPECT_EQ(1, testableMailSender.getCountSendMailMethodIsCalled());
 }
 
 
