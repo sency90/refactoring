@@ -16,6 +16,12 @@ public:
 		return result;
 	}
 
+	tm plusHour(tm base, int hour) {
+		base.tm_hour += hour;
+		mktime(&base);
+		return base;
+	}
+
 	tm NOT_ON_THE_HOUR;
 	tm ON_THE_HOUR;
 	Customer CUSTOMER{"Fake name", "010-1234-5678"};
@@ -26,7 +32,7 @@ public:
 };
 
 //STEP1: Å×½ºÆ® ÄÉÀÌ½º ÀÛ¼º(with Mocking)
-TEST_F(BookingItem, t1) {//¿¹¾àÀº_Á¤½Ã¿¡¸¸_°¡´ÉÇÏ´Ù_Á¤½Ã°¡_¾Æ´Ñ°æ¿ì_¿¹¾àºÒ°¡) {
+TEST_F(BookingItem, t1) {//¿¹¾àÀº_Á¤½Ã·Î¸¸_°¡´ÉÇÏ´Ù_Á¤½Ã°¡_¾Æ´Ñ°æ¿ì_¿¹¾àºÒ°¡) {
 	//arrange
 	Schedule* schedule = new Schedule{NOT_ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
@@ -34,7 +40,7 @@ TEST_F(BookingItem, t1) {//¿¹¾àÀº_Á¤½Ã¿¡¸¸_°¡´ÉÇÏ´Ù_Á¤½Ã°¡_¾Æ´Ñ°æ¿ì_¿¹¾àºÒ°¡) {
 	EXPECT_THROW({bookingScheduler.addSchedule(schedule); }, std::runtime_error);
 }
 
-TEST_F(BookingItem, t2) {//¿¹¾àÀº_Á¤½Ã¿¡¸¸_°¡´ÉÇÏ´Ù_Á¤½ÃÀÎ_°æ¿ì_¿¹¾à°¡´É) {
+TEST_F(BookingItem, t2) {//¿¹¾àÀº_Á¤½Ã·Î¸¸_°¡´ÉÇÏ´Ù_Á¤½ÃÀÎ_°æ¿ì_¿¹¾à°¡´É) {
 	//arrange
 	Schedule* schedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 
@@ -50,20 +56,31 @@ TEST_F(BookingItem, t3) {//½Ã°£´ëº°_ÀÎ¿øÁ¦ÇÑÀÌ_ÀÖ´Ù_°°Àº_½Ã°£´ë¿¡_Capacity_ÃÊ°úÇ
 	Schedule* schedule = new Schedule{ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER};
 	bookingScheduler.addSchedule(schedule);
 
-	//act
 	try {
+		//act
 		Schedule* newSchedule = new Schedule{ON_THE_HOUR, UNDER_CAPACITY, CUSTOMER};
 		bookingScheduler.addSchedule(newSchedule);
 		FAIL();
 	}
 	catch(std::runtime_error & ex) {
+		//assert
 		EXPECT_EQ(string{ex.what()}, string{"Number of people is over restaurant capacity per hour"});
 	}
 
 }
 
 TEST_F(BookingItem, t4) {//½Ã°£´ëº°_ÀÎ¿øÁ¦ÇÑÀÌ_ÀÖ´Ù_°°Àº_½Ã°£´ë°¡_´Ù¸£¸é_Capacity_Â÷ÀÖ¾îµµ_½ºÄÉÁì_Ãß°¡_¼º°ø) {
+	//arrange
+	Schedule* schedule = new Schedule{ON_THE_HOUR, CAPACITY_PER_HOUR, CUSTOMER};
+	bookingScheduler.addSchedule(schedule);
 
+	//act
+	tm differentHour = plusHour(ON_THE_HOUR, 1);
+	Schedule* newSchedule = new Schedule{differentHour, UNDER_CAPACITY, CUSTOMER};
+	bookingScheduler.addSchedule(newSchedule);
+
+	//assert
+	EXPECT_EQ(true, bookingScheduler.hasSchedule(schedule));
 }
 
 TEST_F(BookingItem, t5) {//¿¹¾à¿Ï·á½Ã_SMS´Â_¹«Á¶°Ç_¹ß¼Û) {

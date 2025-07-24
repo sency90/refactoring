@@ -18,7 +18,7 @@ public:
     }
 
     void addSchedule(Schedule* schedule) {
-        //**예약은 정각에만 가능하다 -> Mocking대상**
+        //**예약은 정시로만 가능하다 -> Mocking대상**
         // 정각에 예약하지 않을 경우 RuntimeException 발생
         if (schedule->getDateTime().tm_min != 0) {
             throw std::runtime_error("Booking should be on the hour.");
@@ -69,9 +69,18 @@ public:
 
 private:
     //두 시간이 같은지 확인
-    bool isSameTime(tm a, tm b) {
-        return mktime(&a) == mktime(&b);
-    }
+	bool isSameTime(tm a, tm b) {
+		//mktime(&a) == mktime(&b);
+		return a.tm_sec == b.tm_sec
+			&& a.tm_min == b.tm_min
+			&& a.tm_hour == b.tm_hour
+			&& a.tm_mday == b.tm_mday
+			&& a.tm_mon == b.tm_mon
+			&& a.tm_year == b.tm_year
+			&& a.tm_wday == b.tm_wday
+			&& a.tm_yday == b.tm_yday
+			&& a.tm_isdst == b.tm_isdst;
+	}
 
     //요일을 알려주는 함수
     string getDayOfWeek(time_t tm_t) {
