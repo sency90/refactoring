@@ -3,7 +3,7 @@
 
 class FlashDevice : public FlashMemoryDevice {
 public:
-	unsigned char read(long address) override {
+	unsigned char read(long address) const override {
 		return 0;
 	}
 	void write(long address, unsigned char data) override {

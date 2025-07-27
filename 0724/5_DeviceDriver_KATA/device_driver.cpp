@@ -3,7 +3,7 @@
 DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware)
 	: m_hardware(hardware) {}
 
-int DeviceDriver::read(long address) {
+int DeviceDriver::read(long address) const {
 	// TODO: implement this method properly
 	int readDataFirst = (int)(m_hardware->read(address));
 
@@ -24,7 +24,7 @@ void DeviceDriver::write(long address, int data) {
 	int readData = m_hardware->read(address);
 
 	if(readData == 0xFF) {
-		m_hardware->write(address, (unsigned char)data);
+		m_hardware->write(address, static_cast<unsigned char>(data));
 		return;
 	}
 
