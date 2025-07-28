@@ -13,13 +13,31 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="API">
+      <UniqueIdentifier>{08374e60-7696-4f78-b99a-4318bf41b33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gmock">
+      <UniqueIdentifier>{9c1a3951-82a1-4842-be5d-b5cb5f0aeba3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="kiwer_api.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="kiwer_api.cpp">
+      <Filter>API</Filter>
+    </ClCompile>
     <ClCompile Include="nemo_api.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>API</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc">
+      <Filter>gmock</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc">
+      <Filter>gmock</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>gmock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
