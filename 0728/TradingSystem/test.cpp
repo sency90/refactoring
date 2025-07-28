@@ -41,6 +41,60 @@ public:
 	MOCK_METHOD(bool, setPrice, (const std::string &stockCode), (override));
 };
 
+class AutoTradingSystem {
+public:
+	IStockBroker *stockBroker = nullptr;
+
+	IStockBroker *getStockBroker() {
+		return stockBroker;
+	}
+
+	void selectStockBroker(IStockBroker *stockBroker) {
+		this->stockBroker = stockBroker;
+	}
+
+	bool login(const std::string &id, const std::string &pw) {
+		if(stockBroker == nullptr) {
+			throw std::logic_error("stockBroker doesn't have any instacne.");
+		}
+		bool result = stockBroker->login(id, pw);
+		isLoggedIn = true;
+		return result;
+	}
+
+	bool buy(const std::string &stockCode, int price, int qty) {
+		if(stockBroker == nullptr) {
+			throw std::runtime_error("stockBroker doesn't have any instacne.");
+		}
+		if(price<0 || qty<0) {
+			throw std::invalid_argument("price and quantity must be zero or greater.");
+		}
+		if(false == isLoggedIn) {
+			throw std::logic_error("Login is required before executing buy.");
+		}
+		return stockBroker->buy(stockCode, price, qty);
+	}
+
+	bool sell(const std::string &stockCode, int price, int qty) {
+		if(stockBroker == nullptr) {
+			throw std::runtime_error("stockBroker doesn't have any instacne.");
+		}
+		if(price<0 || qty<0) {
+			throw std::invalid_argument("price and quantity must be zero or greater.");
+		}
+		if(false == isLoggedIn) {
+			throw std::logic_error("Login is required before executing sell.");
+		}
+		return stockBroker->sell(stockCode, price, qty);
+	}
+
+	bool setPrice(const std::string &stockCode) {
+		return stockBroker->setPrice(stockCode);
+	}
+private:
+	bool isLoggedIn = false;
+};
+
 #if 1 //selectStockBroker()
 TEST(AutoTradingSystemTest, SelectStockBroker) {
 	MockStockBroker mockStockBroker;
