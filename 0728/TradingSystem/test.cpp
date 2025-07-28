@@ -22,8 +22,26 @@ using namespace testing;
 //[고급 기능]
 //	1. buyNiceTiming(code, totalMoney)
 //	2. sellNiceTiming(code, qty)
+
 //위의 기능들이 전부 AutoTradingSystem Class에서 구현되어야 한다.
 
+interface IStockBroker{
+public:
+	virtual bool login(const std::string &id, const std::string &pw)=0;
+	virtual bool buy(const std::string &stockCode, int price, int qty)=0;
+	virtual bool sell(const std::string &stockCode, int price, int qty)=0;
+	virtual bool setPrice(const std::string &stockCode)=0;
+};
+
+class MockStockBroker: public IStockBroker {
+public:
+	MOCK_METHOD(bool, login, (const std::string &id, const std::string &pw), (override));
+	MOCK_METHOD(bool, buy, (const std::string &stockCode, int price, int qty), (override));
+	MOCK_METHOD(bool, sell, (const std::string &stockCode, int price, int qty), (override));
+	MOCK_METHOD(bool, setPrice, (const std::string &stockCode), (override));
+};
+
+#if 1 //selectStockBroker()
 TEST(AutoTradingSystemTest, SelectStockBroker) {
 	MockStockBroker mockStockBroker;
 	AutoTradingSystem autoTradingSystem;
@@ -31,7 +49,9 @@ TEST(AutoTradingSystemTest, SelectStockBroker) {
 
 	EXPECT_EQ(autoTradingSystem.getStockBroker(), &mockStockBroker);
 }
+#endif
 
+#if 1 //login(id, pw)
 TEST(AutoTradingSystemTest, Login) {
 	MockStockBroker mockStockBroker;
 	AutoTradingSystem autoTradingSystem;
@@ -53,7 +73,9 @@ TEST(AutoTradingSystemTest, Login_WhenBrokerNotSet_Throws) {
 	const std::string VALID_PW = "valid_pw";
 	EXPECT_THROW({ autoTradingSystem.login(VALID_ID, VALID_PW); }, std::logic_error);
 }
+#endif
 
+#if 1 //buy(stockCode, price, qty)
 TEST(AutoTradingSystemTest, Buy) {
 	MockStockBroker mockStockBroker;
 	AutoTradingSystem autoTradingSystem;
@@ -92,7 +114,9 @@ TEST(AutoTradingSystemTest, Buy_WhenNotLoginAndNotSelectStockBroker_Throws) {
 	const int VALID_QTY = 3;
 	EXPECT_THROW({ autoTradingSystem.buy(VALID_STOCK_CODE, VALID_PRICE, VALID_QTY); }, std::runtime_error);
 }
+#endif
 
+#if 1 //sell(stockCode, price, qty)
 TEST(AutoTradingSystemTest, Sell) {
 	MockStockBroker mockStockBroker;
 	AutoTradingSystem autoTradingSystem;
@@ -130,3 +154,4 @@ TEST(AutoTradingSystemTest, Sell_WhenNotLoginAndNotSelectStockBroker_Throws) {
 	const int VALID_QTY = 3;
 	EXPECT_THROW({ autoTradingSystem.sell(VALID_STOCK_CODE, VALID_PRICE, VALID_QTY); }, std::runtime_error);
 }
+#endif
