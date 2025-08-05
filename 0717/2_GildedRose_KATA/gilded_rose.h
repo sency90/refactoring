@@ -1,29 +1,34 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <vector>
 
 class Item {
-public:
-	std::string name;
-	int sellIn; //»óÇ° ÆÇ¸Å°¡´É±â°£
-	int quality; //sellInÀÌ ÁÙ¾îµé¼ö·Ï quality´Â ¶³¾îÁø´Ù.
-	Item(std::string name, int sellIn, int quality) : name{name}, sellIn{sellIn}, quality{quality} {}
+ public:
+  std::string name;
+  int sellIn;   // ìƒí’ˆ íŒë§¤ê°€ëŠ¥ê¸°ê°„
+  int quality;  // sellInì´ ì¤„ì–´ë“¤ìˆ˜ë¡ qualityëŠ” ë–¨ì–´ì§„ë‹¤.
+  Item(std::string name, int sellIn, int quality)
+      : name{name}, sellIn{sellIn}, quality{quality} {}
+
+  bool operator==(const Item& rhs) const {
+    return name == rhs.name && sellIn == rhs.sellIn && quality == rhs.quality;
+  }
 };
 
 class GildedRose {
-public:
-	std::vector<Item>& items;
-	GildedRose(std::vector<Item>& items);
+ public:
+  std::vector<Item>& items;
+  GildedRose(std::vector<Item>& items);
 
-	void updateQuality();
-	//¸ÅÀÏ ÀÚÁ¤ ¸ğµç ¾ÆÀÌÅÛÀÇ °ªµéÀÌ °»½ÅµÊ
-	//ÆÇ¸Å°¡´É ±â°£ÀÌ Áö³ª¸é, Ç°ÁúÀº 2¹è¾¿ »¡¸® ¶³¾îÁü.
-	//quality<0 ºÒ°¡
-	//quality>50 ºÒ°¡
-	//Æ¯¼ö Item: 
-	// 1. Aged Brie: ½Ã°£ Áö³¯¼ö·Ï Ç°Áú Áõ°¡
-	// 2. Sulfuras: Àü¼³ÅÛ, quality¾È¶³¾îÁö°í Àı´ë ¾ÈÆÊ
-	// 3. Backstage Passes: ÄÜ¼­Æ® Æ¼ÄÏÀÎµ¥, ÆÇ¸Å°¡´É±â°£ÀÌ ´Ù°¡¿Ã¼ö·Ï Ç°Áú Áõ°¡, but Áö³ª¸é 0ÀÌ µÊ.
-	//                      sellIn<=10 ¿¡¼± quality+=2, sellIn<=5¿¡¼± quality+=3;
+  void updateQuality();
+  // ë§¤ì¼ ìì • ëª¨ë“  ì•„ì´í…œì˜ ê°’ë“¤ì´ ê°±ì‹ ë¨
+  // íŒë§¤ê°€ëŠ¥ ê¸°ê°„ì´ ì§€ë‚˜ë©´, í’ˆì§ˆì€ 2ë°°ì”© ë¹¨ë¦¬ ë–¨ì–´ì§.
+  // quality<0 ë¶ˆê°€
+  // quality>50 ë¶ˆê°€
+  // íŠ¹ìˆ˜ Item:
+  //  1. Aged Brie: ì‹œê°„ ì§€ë‚ ìˆ˜ë¡ í’ˆì§ˆ ì¦ê°€
+  //  2. Sulfuras: ì „ì„¤í…œ, qualityì•ˆë–¨ì–´ì§€ê³  ì ˆëŒ€ ì•ˆíŒœ
+  //  3. Backstage Passes: ì½˜ì„œíŠ¸ í‹°ì¼“ì¸ë°, íŒë§¤ê°€ëŠ¥ê¸°ê°„ì´ ë‹¤ê°€ì˜¬ìˆ˜ë¡ í’ˆì§ˆ ì¦ê°€,
+  //  but ì§€ë‚˜ë©´ 0ì´ ë¨.
+  //                       sellIn<=10 ì—ì„  quality+=2, sellIn<=5ì—ì„  quality+=3;
 };
-
