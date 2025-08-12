@@ -17,7 +17,7 @@ class GildedRoseTestFixture : public Test {
 
   void updateQuality(vector<Item>& out_items) {
     GildedRose app(out_items);
-    app.updateQuality();
+    app.UpdateQuality();
   }
 };
 
