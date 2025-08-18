@@ -22,11 +22,26 @@ std::vector<const T*> Raw(const std::vector<std::unique_ptr<T>>& v) {
 }
 
 // unique_ptr 전용: 포인터가 가리키는 '값' 비교
-MATCHER(PtrEqByValue, "compares *lhs == *rhs (unique_ptr)") {
-  const Item* lhs = std::get<0>(arg);
-  const Item* rhs = std::get<1>(arg);
-  if (!lhs || !rhs) return lhs == rhs;
-  return *lhs == *rhs;  // Item::operator== 사용
+MATCHER_P(PtrRangeEqByValue, expected_ref,
+          "compares *lhs == *rhs (unique_ptr)") {
+  const vector<UpItem>& expected = expected_ref.get();
+
+  if (arg.size() != expected.size()) {
+    return false;
+  }
+
+  for (int i = 0; i < arg.size(); i++) {
+    const Item* lhs = arg[i].get();
+    const Item* rhs = expected[i].get();
+
+    if (lhs == nullptr || rhs == nullptr) {
+      return lhs == rhs;
+    }
+    if (!(*lhs == *rhs)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 class GildedRoseTestFixture : public Test {
@@ -148,7 +163,7 @@ TEST_F(GildedRoseTestFixture, AgedBrieItemTest_MaxQuality50Check) {
   expected.emplace_back(
       std::make_unique<AgedBrieItem>(AgedBrieItemStr, -1, 50));
 
-  EXPECT_THAT(Raw(items), Pointwise(PtrEqByValue(), Raw(expected)));
+  EXPECT_THAT(items, PtrRangeEqByValue(std::cref(expected)));
 }
 
 #ifdef EXCEPTION_SETTING
@@ -193,7 +208,7 @@ TEST_F(GildedRoseTestFixture, LegendaryItemTest_NoChangeSellInAndQuality) {
 
   updateQuality(input);
 
-  EXPECT_THAT(Raw(input), Pointwise(PtrEqByValue(), Raw(expected)));
+  EXPECT_THAT(input, PtrRangeEqByValue(std::cref(expected)));
 }
 
 // === Concert Ticket ===
@@ -228,7 +243,7 @@ TEST_F(GildedRoseTestFixture, ConcertTicketItemTest_BoundaryCheck) {
   expected_items.emplace_back(
       std::make_unique<ConcertTicketItem>(ConcertTicketItemStr, -1, 0));
 
-  EXPECT_THAT(Raw(input_items), Pointwise(PtrEqByValue(), Raw(expected_items)));
+  EXPECT_THAT(input_items, PtrRangeEqByValue(std::cref(expected_items)));
 }
 
 TEST_F(GildedRoseTestFixture, ConcertTicketItemTest_MaxQuality50Check) {
@@ -262,7 +277,7 @@ TEST_F(GildedRoseTestFixture, ConcertTicketItemTest_MaxQuality50Check) {
   expected_items.emplace_back(
       std::make_unique<ConcertTicketItem>(ConcertTicketItemStr, -1, 0));
 
-  EXPECT_THAT(Raw(input_items), Pointwise(PtrEqByValue(), Raw(expected_items)));
+  EXPECT_THAT(input_items, PtrRangeEqByValue(std::cref(expected_items)));
 }
 
 #ifdef EXCEPTION_SETTING
