@@ -1,5 +1,5 @@
 #include <iostream>
-#include "gilded_rose.h"
+#include "GildedRose.h"
 
 #ifdef _DEBUG
 #include "gmock/gmock.h"
