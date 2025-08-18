@@ -4,6 +4,8 @@
 
 class Item {
  public:
+  Item() = default;
+  virtual ~Item() = default;
   std::string name;
   int sellIn;   // 상품 판매가능기간
   int quality;  // sellIn이 줄어들수록 quality는 떨어진다.
@@ -13,19 +15,52 @@ class Item {
   bool operator==(const Item& rhs) const {
     return name == rhs.name && sellIn == rhs.sellIn && quality == rhs.quality;
   }
+  virtual void UpdateQuality()=0;
+};
+
+class AgedBrieItem : public Item{
+public:
+  AgedBrieItem() : Item() {}
+  AgedBrieItem(const std::string& name, int sellIn, int quality)
+      : Item(name, sellIn, quality) {}
+  void UpdateQuality();
+};
+
+class LegendaryItem : public Item {
+ public:
+  LegendaryItem() : Item() {}
+  LegendaryItem(const std::string& name, int sellIn, int quality)
+      : Item(name, sellIn, quality) {}
+  void UpdateQuality();
+};
+
+class ConcertTicketItem : public Item {
+ public:
+  ConcertTicketItem() : Item() {}
+  ConcertTicketItem(const std::string& name, int sellIn, int quality)
+      : Item(name, sellIn, quality) {}
+  void UpdateQuality();
+};
+
+class NormalItem : public Item {
+ public:
+  NormalItem() : Item() {}
+  NormalItem(const std::string& name, int sellIn, int quality)
+      : Item(name, sellIn, quality) {}
+  void UpdateQuality();
 };
 
 class GildedRose {
  public:
-  std::vector<Item>& items;
-  GildedRose(std::vector<Item>& items);
+  std::vector<Item*>& items;
+  GildedRose(std::vector<Item*>& items);
 
   void UpdateQuality();
-  void UpdateQualityAgedBrieItem(Item & item);
-  void UpdateQualityConcertTicketItem(Item & item);
-  void UpdateLegendaryItem(Item & item);
-  void UpdateQualityEtcItem(Item & item);
-  void ClampToQualityLimit(int & quality);
+  void UpdateQualityAgedBrieItem(Item& item);
+  void UpdateQualityConcertTicketItem(Item& item);
+  void UpdateLegendaryItem(Item& item);
+  void UpdateQualityEtcItem(Item& item);
+  void ClampToQualityLimit(int& quality);
   // 매일 자정 모든 아이템의 값들이 갱신됨
   // 판매가능 기간이 지나면, 품질은 2배씩 빨리 떨어짐.
   // quality<0 불가
