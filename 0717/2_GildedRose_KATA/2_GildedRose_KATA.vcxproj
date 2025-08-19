@@ -136,6 +136,7 @@
     <ClInclude Include="GildedRoseConfig.h" />
     <ClInclude Include="GildedRose.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
