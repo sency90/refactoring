@@ -1,18 +1,16 @@
 #pragma once
 #include "Item.h"
 #include <memory>
-class ItemFactory {
-private:
-	ItemFactory() = default;
-
+#define interface struct
+interface IItemFactory {
 public:
-	static ItemFactory & GetInstance() {
-		static ItemFactory item_factory;
-		return item_factory;
-	}
+	virtual std::unique_ptr<Item> Create(const std::string &name, int sell_in, int quality)=0;
+};
 
-	template <typename TheItem>
-	std::unique_ptr<Item> Create(const std::string &name, int sell_in, int quality) {
-		return std::make_unique<TheItem>(name, sell_in, quality);
+template<typename T>
+class ItemFactory: public IItemFactory {
+public:
+	std::unique_ptr<Item> Create(const std::string &name, int sell_in, int quality) override {
+		return std::make_unique<T>(name, sell_in, quality);
 	}
 };
