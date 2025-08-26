@@ -1,0 +1,58 @@
+﻿@startuml
+skinparam classAttributeIconSize 0
+
+' ==== Classes ====
+class HairStyleSpec {
+  +front : int
+  +back  : int
+  +side  : int
+}
+
+class HairStyle {
+  -spec_  : HairStyleSpec
+  -price_ : int
+  -HairStyle(spec : HairStyleSpec)
+  +Front() : int
+  +Back()  : int
+  +Side()  : int
+  +Price() : int
+}
+
+interface IHairStyleBuilder {
+  +Reset() : void
+  +Front(front:int) : IHairStyleBuilder
+  +Back(back:int)   : IHairStyleBuilder
+  +Side(side:int)   : IHairStyleBuilder
+  +Build() : HairStyle
+}
+
+class SoldierHairStyleBuilder {
+  -spec_ : HairStyleSpec
+  +Reset() : void
+  +Front(int) : IHairStyleBuilder
+  +Back(int)  : IHairStyleBuilder
+  +Side(int)  : IHairStyleBuilder
+  +Build() : HairStyle
+}
+
+class HairDesigner {
+  -builder : IHairStyleBuilder&
+  +HairDesigner(builder: IHairStyleBuilder&)
+  +CutSoldierHairStyle(front:int, back:int, side:int) : HairStyle
+}
+
+' ==== Relationships ====
+HairStyle *-- HairStyleSpec
+SoldierHairStyleBuilder ..|> IHairStyleBuilder
+HairDesigner --> IHairStyleBuilder
+HairDesigner ..> HairStyle
+SoldierHairStyleBuilder ..> HairStyle : <<create>>
+IHairStyleBuilder ..> HairStyle
+SoldierHairStyleBuilder *-- HairStyleSpec
+
+' (선택) friend 힌트
+note top of HairStyle
+only SoldierHairStyleBuilder can call HairStyle constructor
+end note
+
+@enduml
