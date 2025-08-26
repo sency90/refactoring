@@ -2,86 +2,103 @@
 #include <string>
 #include <stdexcept>
 #include <cstdlib>
+#include <memory>
 using namespace std;
-class Cut {
-public:
-	class Builder {
-	public:
-		Builder &setStyle(const std::string &style) {
-			this->style = style;
-			return *this;
-		}
+struct HairStyleSpec {
+	int front=0;
+	int back=0;
+	int side=0;
+};
 
-		Builder &setFront(int front) {
-			this->front = front;
-			return *this;
-		}
-
-		Builder &setBack(int back) {
-			this->back = back;
-			return *this;
-		}
-
-		Builder &setSide(int side) {
-			this->side = side;
-			return *this;
-		}
-
-		Builder &setGuretnaru(int guretnaru) {
-			this->guretnaru = guretnaru;
-			return *this;
-		}
-
-		Builder &setMustache(int mustache) {
-			this->mustache = mustache;
-			return *this;
-		}
-
-		Cut build() {
-			return Cut(style, front, back, side);
-		}
-
-
-	private:
-		std::string style;
-		int front, back, side, guretnaru, mustache;
-	};
+class HairStyle {
+private:
+	HairStyleSpec spec_{};
+	int price_{ 0 };
 
 public:
-	Cut()=default;
-	void setCut(const Cut &cut) {
-		*this = cut;
-		validateArguments();
-	}
+	int Front() const noexcept { return spec_.front; }
+	int Back() const noexcept { return spec_.back; }
+	int Side() const noexcept { return spec_.side; }
+	int Price() const noexcept { return price_; }
 
 private:
-	Cut(const std::string &style, int front, int back, int side, int guretnaru=0, int mustache=0)
-		: style(style), front(front), back(back), side(side), guretnaru(guretnaru), mustache(mustache) {
+	friend class SoldierHairStyleBuilder; //Builder만 생성 가능
+	explicit HairStyle(const HairStyleSpec &spec):spec_(spec), price_(ComputePrice()) {}
+
+	int ComputePrice() const {
+		ValidateBeforeComputePrice();
+		return spec_.front * 1'000 + spec_.back * 2'000 + spec_.side * 10'000;
 	}
 
-	void validateArguments() const {
-		if(!style.empty()) {
-			throw std::invalid_argument("Style name must be set.");
-		}
-		if(front<=0) {
-			throw std::invalid_argument("Front hair must be greater than 0cm.");
-		}
-		if(back<=0) {
-			throw std::invalid_argument("...");
-		}
-		if(side<=0) {
-			throw std::invalid_argument("...");
+	void ValidateBeforeComputePrice() const {
+		if(spec_.front<0 || spec_.back<0 || spec_.side<0) {
+			throw std::logic_error("You need to set hair_style");
 		}
 	}
-
-	std::string style;
-	int front, back, side, guretnaru, mustache;
 };
+
+class IHairStyleBuilder {
+public:
+	virtual ~IHairStyleBuilder() {}
+	virtual void Reset()=0;
+	virtual IHairStyleBuilder &Front(int front)=0;
+	virtual IHairStyleBuilder &Back(int back)=0;
+	virtual IHairStyleBuilder &Side(int side)=0;
+	[[nodiscard]] virtual HairStyle Build()=0;
+	//Interface 역할을 하기 위해 멤버변수는 선언하지 않는다.
+};
+
+class SoldierHairStyleBuilder: public IHairStyleBuilder {
+private:
+	HairStyleSpec spec_{};
+
+public:
+	void Reset() override {
+		spec_={};
+	}
+
+	IHairStyleBuilder &Front(int front) override {
+		spec_.front = front;
+		return *this;
+	}
+
+	IHairStyleBuilder &Back(int back) override {
+		spec_.back = back;
+		return *this;
+	}
+
+	IHairStyleBuilder &Side(int side) override {
+		spec_.side = side;
+		return *this;
+	}
+
+	[[nodiscard]] HairStyle Build() override {
+		HairStyle hair_style{ spec_ };
+		Reset();
+		return hair_style;
+	}
+};
+
+class HairDesigner { //Director
+private:
+	IHairStyleBuilder &builder;
+public:
+	explicit HairDesigner(IHairStyleBuilder &builder):builder(builder) {}
+	[[nodiscard]] HairStyle CutSoldierHairStyle(int front, int back, int side) {
+		builder.Reset();
+		return builder.Front(front).Back(back).Side(side).Build();
+	}
+};
+
 int main() {
-	//그래서 method chaining 방식을 이용
-	//하지만, user(client)가 실수로 세팅 하나를 놓칠 수 있다.
-	//또한, setting순서가 중요한 경우에도 이를 실수할 수 있다.
-	Cut soldier_cut;
-	soldier_cut.setCut(Cut::Builder().setFront(1).setBack(1).setSide(1).build());
+	try {
+		std::unique_ptr<IHairStyleBuilder> builder = std::make_unique<SoldierHairStyleBuilder>();
+		HairDesigner hair_designer(*builder); //Director가 ConcreteBuilder를 인자로 받아서 
+		HairStyle hair_style = hair_designer.CutSoldierHairStyle(1, 2, 3);
+		printf("Soldier Hair Style Price: %d\n", hair_style.Price());
+	}
+	catch(std::exception &ex) {
+		printf("[EXCEPTION] %s\n", ex.what());
+	}
 	return 0;
 }
